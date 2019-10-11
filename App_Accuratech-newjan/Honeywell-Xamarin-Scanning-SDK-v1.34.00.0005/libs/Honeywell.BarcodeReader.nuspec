@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Honeywell.BarcodeReader</id>
+    <version>1.34.0.5</version>
+    <authors>Honeywell International Inc.</authors>
+    <owners>Honeywell International Inc.</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Honeywell AIDC Cross Platform Scanning SDK</description>
+    <releaseNotes>Initial revision</releaseNotes>
+    <copyright>Copyright (c) 2015-2019 Honeywell International Inc. All Rights Reserved.</copyright>
+    <tags>Scanning AIDC</tags>
+  </metadata>
+</package>

@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:UI_Mobile.Behaviors"
+             mc:Ignorable="d"
+             x:Class="UI_Mobile.Views.MainPageDetail"
+             Title="{Binding Header}">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Clear" Clicked="ClearClicked"/>
+        <ToolbarItem Text="Save" Clicked="SaveClicked"/>
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <StackLayout Spacing="0" Padding="10" BackgroundColor="GhostWhite">
+
+            <ListView ItemsSource="{Binding Path=MenuItemEntityModel.SubItems}"
+                            SelectionMode="None"
+                            VerticalOptions="FillAndExpand"
+                            HasUnevenRows="True"
+                            IsPullToRefreshEnabled="True"
+                            CachingStrategy="RecycleElement"
+                            x:Name="SubItemsListView"
+                            ItemTapped="OnItemTapped">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout>
+                            <StackLayout Orientation="Horizontal">
+                                <Label FontSize="14" TextColor="Black" HorizontalOptions="Start" VerticalOptions="Center" WidthRequest="100" Text="{Binding Name}" />
+                                <Entry x:Name="FieldEntry"
+                                        HorizontalOptions="FillAndExpand"
+                                        TextColor="Black" 
+                                    BackgroundColor="GhostWhite"
+                                    Placeholder="Enter value"                                     
+                                    Text="{Binding FieldValue}"
+                                    FontSize="16" 
+                                    IsSpellCheckEnabled="False">
+                                        <Entry.Behaviors>
+                                            <local:NumericValidationBehavior/>
+                                        </Entry.Behaviors>
+                                    
+                                </Entry>
+                            </StackLayout>
+                            <Label HorizontalTextAlignment="Center" Text="{Binding DisplayMessage}" TextColor="Red"/>
+                            </StackLayout>
+
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Button Grid.Row="4" x:Name="mScanButton" Text="Scan" HorizontalOptions="Center" VerticalOptions="End" Clicked="OnScanButtonClicked"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -1,0 +1,35 @@
+﻿<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:Windows.UI.Xaml.Controls;assembly=Windows.Foundation.UniversalApiContract"
+             mc:Ignorable="d"
+             x:Class="App.NewItemPage">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Cancel"/>
+        <ToolbarItem Text="Save" Clicked="SaveClicked"/>
+    </ContentPage.ToolbarItems>
+
+    <StackLayout Padding="10" Spacing="10">
+        <ListView 
+            SelectionMode="None"
+            VerticalOptions="FillAndExpand"
+            HasUnevenRows="True"
+            IsPullToRefreshEnabled="True"
+            CachingStrategy="RecycleElement"
+            x:Name="SubItemsListView"
+            >
+            <ListView.ItemsSource>
+                <Binding Path="MenuItemEntity.SubItems" />
+            </ListView.ItemsSource>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <EntryCell Placeholder="Value" Label="{Binding Name}" Text="{Binding FieldValue}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+
+
+</ContentPage>
