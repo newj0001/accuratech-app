@@ -1,6 +1,8 @@
 ﻿using Common;
 using Common.Services;
 using Honeywell.AIDC.CrossPlatform;
+using Newtonsoft.Json;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,10 +12,12 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using UI_Mobile.Models;
 using UI_Mobile.ViewModels;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+
 
 namespace UI_Mobile.Views
 {
@@ -47,12 +51,13 @@ namespace UI_Mobile.Views
             PopulateReaderPicker();
             await OpenBarcodeReader();
             await ToogleBarcodeReader(true);
-
+            Connectivity.ConnectivityChanged += Connectivity_ConnectivityChanged;
             ClearText(_parentMenuItem);
         }
 
         protected override async void OnDisappearing()
         {
+            Connectivity.ConnectivityChanged -= Connectivity_ConnectivityChanged;
             await CloseBarcodeReader();
         }
 
@@ -62,6 +67,18 @@ namespace UI_Mobile.Views
             {
                 UpdateBarcodeInfo(e.Data, _parentMenuItem);
             }, null);
+        }
+
+        private async void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
+        {
+            if (e.NetworkAccess == NetworkAccess.Internet)
+            {
+                await LabelConnection.FadeTo(0).ContinueWith((result) => { });
+                           }
+            else
+            {
+                await LabelConnection.FadeTo(1).ContinueWith((result) => { });
+            }
         }
 
         public async Task ToogleBarcodeReader(bool enable)
@@ -358,10 +375,44 @@ namespace UI_Mobile.Views
                 registrationValue.SubItemName = subItemEntity.Name;
 
                 registration.RegistrationValues.Add(registrationValue);
-
             }
-            await new RegistrationDataStore().AddItemAsync(registration);
+
+            QueueItem queueItem = new QueueItem()
+            {
+                Url = "http://172.30.1.141:44333/api/registration/",
+                Body = JsonConvert.SerializeObject(registration),
+                Date = DateTime.UtcNow
+            }; 
+
+            var current = Connectivity.NetworkAccess;
+
+            if (current == NetworkAccess.Internet)
+            {
+                await LabelConnection.FadeTo(0).ContinueWith((result) => { });
+                await new RegistrationDataStore().AddItemAsync(registration);
+                var entities = App.Database.FetchQueueItems();
+                foreach (var entity in entities)
+                {
+                    try
+                    {
+                        await App.Database.DeleteQueueItemAsync(entity.Id);
+                    }
+                    catch (Exception)
+                    {
+
+                        throw;
+                    }
+                }
+                await DisplayAlert("Ok", "Saved Online", "Ok");
+            }
+            else
+            {
+                await LabelConnection.FadeTo(1).ContinueWith((result) => { });
+                await App.Database.SaveQueueItemAsync(queueItem);
+                await DisplayAlert("Ok", "Saved Offline", "Ok");
+            }
         }
+
 
         private async void ClearClicked(object sender, EventArgs e)
         {

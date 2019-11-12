@@ -7,39 +7,34 @@ using UI_Mobile.Models;
 using System.Collections.Generic;
 using System.Linq;
 using SQLitePCL;
-using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
-using Common.Standard.Persistence;
+using System.IO;
 
 namespace UI_Mobile
 {
     public partial class App : Application
     {
-        public static DatabaseContextOffline DbContext { get; private set; }
+        static QueueDatabase database;
+
+        public static string FilePath;
+
+        public static QueueDatabase Database
+        {
+            get
+            {
+                if (database == null)
+                {
+                    database = new QueueDatabase(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Queue.db3"));
+                }
+                return database;
+            }
+        }
 
         public App()
         {
             InitializeComponent();
 
-            InitializeDatabase();
-
             MainPage = new MainPage();
-        }
-
-        private void InitializeDatabase()
-        {
-            try
-            {
-                Batteries_V2.Init();
-                using var db = DbConnection.Instance.DbContextOffline;
-                db.Database.Migrate();
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.InnerException.Message);
-            }
-
-            DbContext = DbConnection.Instance.DbContextOffline;
         }
 
         protected override void OnStart()

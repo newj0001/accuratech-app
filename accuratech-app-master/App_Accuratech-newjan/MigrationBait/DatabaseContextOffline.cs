@@ -1,10 +1,9 @@
-﻿using Common.Standard.Persistence.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Diagnostics;
 using System.IO;
 
-namespace Common.Standard.Persistence
+namespace MigrationBait
 {
     public class DatabaseContextOffline : DbContext
     {
@@ -22,11 +21,6 @@ namespace Common.Standard.Persistence
                 Database.EnsureCreated();
             }
             dbPath = GetDatabasePath();
-        }
-
-        public DatabaseContextOffline(string databasePath)
-        {
-            dbPath = databasePath;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

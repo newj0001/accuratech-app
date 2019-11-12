@@ -6,14 +6,7 @@
              mc:Ignorable="d"
              x:Class="UI_Mobile.Views.MainPageMaster"
              Title="Browse">
-    <StackLayout>
-        <Button 
-            Text="Add item to db" 
-            Clicked="Button_Clicked"
-            HorizontalOptions="Center"
-            VerticalOptions="CenterAndExpand" />
-    </StackLayout>
-    <!--<ContentPage.Content>
+    <ContentPage.Content>
         <StackLayout>
             <ListView x:Name="MenuListView"
                       ItemsSource="{Binding MenuItemsCollection}"
@@ -52,5 +45,5 @@
                 </ListView.ItemTemplate>
             </ListView>
         </StackLayout>
-    </ContentPage.Content>-->
+    </ContentPage.Content>
 </ContentPage>
