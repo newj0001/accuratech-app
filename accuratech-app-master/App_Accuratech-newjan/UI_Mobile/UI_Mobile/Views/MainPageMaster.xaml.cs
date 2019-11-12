@@ -33,18 +33,6 @@ namespace UI_Mobile.Views
             Connectivity.ConnectivityChanged -= Connectivity_ConnectivityChanged;
         }
 
-
-        //public async Task AddMenuItem()
-        //{
-        //    var menuItem = new MenuItemEntityModel
-        //    {
-        //        Header = MenuItemTitle,
-        //        IsMenuEnabled = SelectedElementInIsMenuEnabled.ToString()
-        //    };
-        //    await _menuItemDataStore.AddItemAsync(menuItem);
-        //    NewMenuItemCreated?.Invoke(this, EventArgs.Empty);
-        //}
-
         private async void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
         {
             if (e.NetworkAccess == NetworkAccess.None)
@@ -52,7 +40,9 @@ namespace UI_Mobile.Views
                 
                 var previousMenuItem = new MenuItemEntity
                 {
-                    Header = "PØlse",
+                    Header = "Test1",
+
+                    
                 };
                 await App.MenuItemDatabase.SaveMenuItemAsync(previousMenuItem);
                 MenuListView.ItemsSource = await App.MenuItemDatabase.GetMenuItemsAsync();

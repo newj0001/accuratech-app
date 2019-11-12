@@ -1,16 +1,18 @@
 ﻿using Common;
 using Newtonsoft.Json;
 using SQLite;
+using SQLiteNetExtensions.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace UI_Mobile.Models
 {
+    [Table("MenuItems")]
     public class MenuItemEntity
     {
         private int _id;
-
+        [PrimaryKey, AutoIncrement]
         public int Id
         {
             get => _id;
@@ -31,44 +33,18 @@ namespace UI_Mobile.Models
             }
         }
 
-        //private string _subItems;
-        ////private ICollection<SubItemEntityModel> _subItems;
 
-        //[Ignore]
-        //public ICollection<SubItemEntityModel> SubItems
-        //{
-        //    get
-        //    {
-        //        return JsonConvert.DeserializeObject<ICollection<SubItemEntityModel>>(_subItems);
-        //    }
-        //    set
-        //    {
-        //        _subItems = JsonConvert.SerializeObject(value);
-        //    }
-        //}
+        private ICollection<SubItemEntityModel> _subItems;
 
-        //public ICollection<RegistrationModel> Registrations { get; set; }
-
-        //public bool IsMenuEnabledAsBool
-        //{
-        //    get
-        //    {
-        //        switch (IsMenuEnabled)
-        //        {
-        //            case "Disabled":
-        //                return false;
-
-        //            case "Enabled":
-        //                return true;
-
-        //            default: return false;
-        //        }
-        //    }
-        //    private set { }
-        //}
-
-        //public string IsMenuEnabled { get; set; }
-
-
+        [TextBlob("SubItemsBlobbed")]
+        public ICollection<SubItemEntityModel> SubItems
+        {
+            get => _subItems;
+            set
+            {
+                _subItems = value;
+            }
+        }
+        public string SubItemsBlobbed { get; set; }
     }
 }
