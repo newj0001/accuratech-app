@@ -74,7 +74,7 @@ namespace UI_Mobile.Views
             if (e.NetworkAccess == NetworkAccess.Internet)
             {
                 await LabelConnection.FadeTo(0).ContinueWith((result) => { });
-                           }
+            }
             else
             {
                 await LabelConnection.FadeTo(1).ContinueWith((result) => { });
@@ -388,27 +388,25 @@ namespace UI_Mobile.Views
 
             if (current == NetworkAccess.Internet)
             {
-                await LabelConnection.FadeTo(0).ContinueWith((result) => { });
-                await new RegistrationDataStore().AddItemAsync(registration);
-                var entities = App.Database.FetchQueueItems();
+                var entities = App.QueueDatabase.FetchQueueItems();
                 foreach (var entity in entities)
                 {
                     try
                     {
-                        await App.Database.DeleteQueueItemAsync(entity.Id);
+                        await App.QueueDatabase.DeleteQueueItemAsync(entity.Id);
                     }
                     catch (Exception)
                     {
 
-                        throw;
+                        break;
                     }
                 }
+                await new RegistrationDataStore().AddItemAsync(registration);
                 await DisplayAlert("Ok", "Saved Online", "Ok");
             }
             else
             {
-                await LabelConnection.FadeTo(1).ContinueWith((result) => { });
-                await App.Database.SaveQueueItemAsync(queueItem);
+                await App.QueueDatabase.SaveQueueItemAsync(queueItem);
                 await DisplayAlert("Ok", "Saved Offline", "Ok");
             }
         }

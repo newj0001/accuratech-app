@@ -44,6 +44,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            <Label Grid.Row="4" Grid.RowSpan="2" Margin="10" HorizontalOptions="Center" Text="Disconnected" x:Name="LabelConnection" Opacity="0"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

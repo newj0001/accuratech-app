@@ -27,6 +27,9 @@
     <Reference Include="Honeywell.AIDC.CrossPlatform.BarcodeReader">
       <HintPath>..\..\Honeywell-Xamarin-Scanning-SDK-v1.34.00.0005\libs\lib\MonoAndroid41\Honeywell.AIDC.CrossPlatform.BarcodeReader.dll</HintPath>
     </Reference>
+    <Reference Include="Mono.Android">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio\2019\Professional\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v9.0\Mono.Android.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>

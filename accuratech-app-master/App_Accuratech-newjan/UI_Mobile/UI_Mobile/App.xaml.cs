@@ -14,19 +14,32 @@ namespace UI_Mobile
 {
     public partial class App : Application
     {
-        static QueueDatabase database;
+        static QueueDatabase queueDatabase;
+        static MenuItemDatabase menuItemDatabase;
 
         public static string FilePath;
 
-        public static QueueDatabase Database
+        public static QueueDatabase QueueDatabase
         {
             get
             {
-                if (database == null)
+                if (queueDatabase == null)
                 {
-                    database = new QueueDatabase(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Queue.db3"));
+                    queueDatabase = new QueueDatabase(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Queue.db3"));
                 }
-                return database;
+                return queueDatabase;
+            }
+        }
+
+        public static MenuItemDatabase MenuItemDatabase
+        {
+            get
+            {
+                if (menuItemDatabase == null)
+                {
+                    menuItemDatabase = new MenuItemDatabase(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MenuItem.db3"));
+                }
+                return menuItemDatabase;
             }
         }
 
