@@ -4,47 +4,61 @@ using SQLite;
 using SQLiteNetExtensions.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace UI_Mobile.Models
 {
     [Table("MenuItems")]
-    public class MenuItemEntity
+    public class MenuItemEntity : INotifyPropertyChanged
     {
-        private int _id;
         [PrimaryKey, AutoIncrement]
-        public int Id
-        {
-            get => _id;
-            set
-            {
-                _id = value;
-            }
-        }
+        public int Id { get; set; }
 
-        private string _header;
-
-        public string Header
-        {
-            get { return _header; }
-            set
-            {
-                _header = value;
-            }
-        }
+        public string Header { get; set; }
 
 
-        private ICollection<SubItemEntityModel> _subItems;
-
-        [TextBlob("SubItemsBlobbed")]
-        public ICollection<SubItemEntityModel> SubItems
-        {
+        private ICollection<SubItemEntity> _subItems;
+        
+        [OneToMany]
+        public ICollection<SubItemEntity> SubItems 
+        { 
             get => _subItems;
             set
             {
                 _subItems = value;
+                NotifyPropertyChanged();
             }
         }
-        public string SubItemsBlobbed { get; set; }
+
+        [OneToMany]
+        public ICollection<RegistrationItemEntity> Registrations { get; set; }
+
+        public bool IsMenuEnabledAsBool
+        {
+            get
+            {
+                switch (IsMenuEnabled)
+                {
+                    case "Disabled":
+                        return false;
+
+                    case "Enabled":
+                        return true;
+
+                    default: return false;
+                }
+            }
+            private set { }
+        }
+
+        public string IsMenuEnabled { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

@@ -25,6 +25,7 @@ namespace UI_Mobile.Views
     public partial class MainPageDetail : ContentPage, INotifyPropertyChanged
     {
         private MenuItemEntityModel _parentMenuItem;
+
         private SubItemEntityModel _parentSubItem = new SubItemEntityModel();
         private SynchronizationContext mUIContext = SynchronizationContext.Current;
         private const string DEFAULT_READER_KEY = "default";

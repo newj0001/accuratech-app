@@ -163,10 +163,6 @@
       <Project>{0fc001e1-44b0-4897-a3b1-a22a31683d32}</Project>
       <Name>Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\UI_Mobile\UI_Mobile\UI_Mobile.csproj">
-      <Project>{7EF58C05-42E1-4A1F-A417-8CFB16EF0D58}</Project>
-      <Name>UI_Mobile</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

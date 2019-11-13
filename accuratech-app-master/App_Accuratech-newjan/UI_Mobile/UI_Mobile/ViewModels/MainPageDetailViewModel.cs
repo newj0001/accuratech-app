@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Common;
 using Common.Services;
 using Common.ViewModel;
+using UI_Mobile.Models;
 using Xamarin.Forms;
 
 namespace UI_Mobile.ViewModels
@@ -36,6 +37,16 @@ namespace UI_Mobile.ViewModels
             }
         }
 
+        private MenuItemEntity _menuItemEntity;
+        public MenuItemEntity MenuItemEntity
+        {
+            get => _menuItemEntity;
+            set
+            {
+                _menuItemEntity = value;
+                NotifyPropertyChanged();
+            }
+        }
         private SubItemEntityModel _subItemEntityModel;
         public SubItemEntityModel SubItemEntityModel
         {
@@ -46,19 +57,46 @@ namespace UI_Mobile.ViewModels
                 NotifyPropertyChanged();
             }
         }
+
+        private SubItemEntity _subItemEntity;
+        public SubItemEntity SubItemEntity
+        {
+            get => _subItemEntity;
+            set
+            {
+                _subItemEntity = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         public MainPageDetailViewModel() { }
         public MainPageDetailViewModel(SubItemEntityModel paramSubItem)
         {
             _subItemEntityModel = paramSubItem;
         }
 
+        public MainPageDetailViewModel(SubItemEntity paramSubItem)
+        {
+            _subItemEntity = paramSubItem;
+        }
+
+        //public string Header
+        //{
+        //    get { return _menuItemEntityModel.Header; }
+        //    set
+        //    {
+        //        _menuItemEntityModel.Header = value;
+        //        NotifyPropertyChanged();
+        //    }
+        //}
+
         public string Header
         {
-            get { return _menuItemEntityModel.Header; }
-            set 
+            get { return _menuItemEntity.Header; }
+            set
             {
-                _menuItemEntityModel.Header = value; 
-                NotifyPropertyChanged(); 
+                _menuItemEntity.Header = value;
+                NotifyPropertyChanged();
             }
         }
 
@@ -113,6 +151,11 @@ namespace UI_Mobile.ViewModels
         public void Reset(MenuItemEntityModel menuItemEntityModel)
         {
             MenuItemEntityModel = menuItemEntityModel;
+        }
+
+        public void Reset(MenuItemEntity menuItemEntity)
+        {
+            MenuItemEntity = menuItemEntity;
         }
 
         public event EventHandler NewRegistrationValueCreated;

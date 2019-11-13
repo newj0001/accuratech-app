@@ -74,6 +74,7 @@
     <Compile Include="HelperClasses\ApiHelper.cs" />
     <Compile Include="Commands\MenuItemDeleterCommand.cs" />
     <Compile Include="Commands\FieldItemDeleterCommand.cs" />
+    <Compile Include="Model\IMenuItemEntityModel.cs" />
     <Compile Include="Model\MenuItemEntityModel.cs" />
     <Compile Include="Services\FieldItemDataStore.cs" />
     <Compile Include="Services\MenuItemDataStore.cs" />

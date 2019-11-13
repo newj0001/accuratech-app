@@ -29,9 +29,9 @@ namespace Common
         public string Header
         {
             get { return _header; }
-            set 
-            { 
-                _header = value; 
+            set
+            {
+                _header = value;
                 NotifyPropertyChanged();
             }
         }
@@ -59,10 +59,10 @@ namespace Common
                 {
                     case "Disabled":
                         return false;
-                        
+
                     case "Enabled":
                         return true;
-                        
+
                     default: return false;
                 }
             }

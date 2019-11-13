@@ -16,11 +16,15 @@ namespace UI_Mobile
         {
             _database = new SQLiteAsyncConnection(dbPath);
             _database.CreateTableAsync<MenuItemEntity>().Wait();
+            _database.CreateTableAsync<SubItemEntity>().Wait();
+            _database.CreateTableAsync<RegistrationItemEntity>().Wait();
+            _database.CreateTableAsync<RegistrationValueItemEntity>().Wait();
         }
 
         public Task<List<MenuItemEntity>> GetMenuItemsAsync()
         {
-            return _database.Table<MenuItemEntity>().ToListAsync();
+            var items = _database.Table<MenuItemEntity>().ToListAsync();
+            return items;
         }
 
         public Task<MenuItemEntity> GetMenuItemAsync(int id)
@@ -45,9 +49,18 @@ namespace UI_Mobile
             }
         }
 
-        public Task<int> DeleteMenuItemAsync(int id)
+        public async Task SaveMenuItemsAsync(ICollection<MenuItemEntity> items)
         {
-            return _database.DeleteAsync(id);
+            var count = 0;
+            foreach (var item in items)
+            {
+                 count += await _database.InsertAsync(item);
+            }
+        }
+
+        public Task<int> DeleteAllMenuItemAsync()
+        {
+            return _database.DeleteAllAsync<MenuItemEntity>();
         }
     }
 }

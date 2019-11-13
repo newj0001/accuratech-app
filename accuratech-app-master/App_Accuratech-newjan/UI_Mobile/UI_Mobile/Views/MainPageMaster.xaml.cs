@@ -1,5 +1,6 @@
 ﻿using Common;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using UI_Mobile.Models;
 using UI_Mobile.ViewModels;
@@ -34,38 +35,66 @@ namespace UI_Mobile.Views
         }
 
         private async void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
-        {
+         {
+
             if (e.NetworkAccess == NetworkAccess.None)
             {
-                
-                var previousMenuItem = new MenuItemEntity
-                {
-                    Header = "Test1",
-
-                    
-                };
-                await App.MenuItemDatabase.SaveMenuItemAsync(previousMenuItem);
                 MenuListView.ItemsSource = await App.MenuItemDatabase.GetMenuItemsAsync();
                 await LabelConnection.FadeTo(1).ContinueWith((result) => { });
             }
             else
             {
                 await LabelConnection.FadeTo(0).ContinueWith((result) => { });
-                await mainPageMasterViewModel.Reset();
-                MenuListView.ItemsSource = await _menuItemDataStore.GetItemsAsync();
+                var items = await _menuItemDataStore.GetItemsAsync();
+                await App.MenuItemDatabase.DeleteAllMenuItemAsync();
+                await App.MenuItemDatabase.SaveMenuItemsAsync(ConvertToEntity(items));
+                MenuListView.ItemsSource = items;
             }
+        }
+
+        private ICollection<MenuItemEntity> ConvertToEntity(ICollection<MenuItemEntityModel> items)
+        {
+            var entities = new List<MenuItemEntity>();
+            foreach (var item in items)
+            {
+                var x = new MenuItemEntity();
+                x.Header = item.Header;
+                x.IsMenuEnabled = item.IsMenuEnabled;
+                x.SubItems = ConvertToSubEntity(item.SubItems);
+
+                entities.Add(x);
+            }
+
+            return entities;
+        }
+
+        private ICollection<SubItemEntity> ConvertToSubEntity(ICollection<SubItemEntityModel> subItems)
+        {
+            var entities = new List<SubItemEntity>();
+            foreach (var item in subItems)
+            {
+                var x = new SubItemEntity();
+                {
+                    x.FieldValue = item.FieldValue;
+
+                    entities.Add(x);
+                }
+            }
+            return entities;
         }
 
         private async void OnItemSelected(object sender, ItemTappedEventArgs e)
         {
             var selectedItem = e.Item as MenuItemEntityModel;
+            var selectedItemOfflineMode = e.Item as MenuItemEntity;
 
-            if (!selectedItem.IsMenuEnabledAsBool)
+
+            if (!selectedItemOfflineMode.IsMenuEnabledAsBool)
             {
                 return;
             }
 
-            await Navigation.PushAsync(new MainPageDetail(selectedItem));
+            await Navigation.PushAsync(new MainPageDetailOffline(selectedItemOfflineMode));
             ((ListView)sender).SelectedItem = null;
         }
     }

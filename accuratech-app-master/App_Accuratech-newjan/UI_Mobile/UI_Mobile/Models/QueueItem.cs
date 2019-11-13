@@ -5,6 +5,7 @@ using System.Text;
 
 namespace UI_Mobile.Models
 {
+    [Table("QueueItems")]
     public class QueueItem
     {
         [PrimaryKey, AutoIncrement]
