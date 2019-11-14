@@ -24,7 +24,9 @@ namespace UI_Mobile.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MainPageDetail : ContentPage, INotifyPropertyChanged
     {
-        private MenuItemEntityModel _parentMenuItem;
+        private MenuItemEntityModel _parentMenuItemModel;
+        private MenuItemEntity _parentMenuItem;
+
 
         private SubItemEntityModel _parentSubItem = new SubItemEntityModel();
         private SynchronizationContext mUIContext = SynchronizationContext.Current;
@@ -43,7 +45,18 @@ namespace UI_Mobile.Views
             mainPageDetailViewModel.Reset(menuItemEntityModel);
             BindingContext = mainPageDetailViewModel;
             mBarcodeReaders = new Dictionary<string, BarcodeReader>();
-            _parentMenuItem = menuItemEntityModel;
+            _parentMenuItemModel = menuItemEntityModel;
+        }
+
+        public MainPageDetail(MenuItemEntity menuItemEntity)
+        {
+            InitializeComponent();
+
+            MainPageDetailViewModel mainPageDetailViewModel = new MainPageDetailViewModel();
+            mainPageDetailViewModel.Reset(menuItemEntity);
+            BindingContext = mainPageDetailViewModel;
+            mBarcodeReaders = new Dictionary<string, BarcodeReader>();
+            _parentMenuItem = menuItemEntity;
         }
 
         #region SCAN
@@ -53,7 +66,7 @@ namespace UI_Mobile.Views
             await OpenBarcodeReader();
             await ToogleBarcodeReader(true);
             Connectivity.ConnectivityChanged += Connectivity_ConnectivityChanged;
-            ClearText(_parentMenuItem);
+            ClearText(_parentMenuItemModel);
         }
 
         protected override async void OnDisappearing()
@@ -66,7 +79,7 @@ namespace UI_Mobile.Views
         {
             mUIContext.Post(_ =>
             {
-                UpdateBarcodeInfo(e.Data, _parentMenuItem);
+                UpdateBarcodeInfo(e.Data, _parentMenuItemModel);
             }, null);
         }
 
@@ -78,6 +91,7 @@ namespace UI_Mobile.Views
             }
             else
             {
+                SubItemsListView.ItemsSource = await App.MenuItemDatabase.LoadMenuItemsAsync();
                 await LabelConnection.FadeTo(1).ContinueWith((result) => { });
             }
         }
@@ -417,7 +431,7 @@ namespace UI_Mobile.Views
         {
             bool answer = await DisplayAlert("", $"Would you like to clear the registration?", "Save", "Cancel");
             if (answer)
-                ClearText(_parentMenuItem); 
+                ClearText(_parentMenuItemModel); 
             else
                 return;
          }

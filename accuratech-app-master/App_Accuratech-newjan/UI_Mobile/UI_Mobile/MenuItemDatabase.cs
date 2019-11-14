@@ -2,6 +2,7 @@
 using SQLite;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 using UI_Mobile.Models;
@@ -11,17 +12,31 @@ namespace UI_Mobile
     public class MenuItemDatabase
     {
         readonly SQLiteAsyncConnection _database;
+        readonly SQLiteConnection _db;
 
         public MenuItemDatabase(string dbPath)
         {
-            _database = new SQLiteAsyncConnection(dbPath);
-            _database.CreateTableAsync<MenuItemEntity>().Wait();
-            _database.CreateTableAsync<SubItemEntity>().Wait();
-            _database.CreateTableAsync<RegistrationItemEntity>().Wait();
-            _database.CreateTableAsync<RegistrationValueItemEntity>().Wait();
+            try
+            {
+                _database = new SQLiteAsyncConnection(dbPath);
+                _database.CreateTableAsync<MenuItemEntity>();
+
+            }
+            catch (SQLiteException ex)
+            {
+
+                Debug.WriteLine(ex.Message);
+            }
+
         }
 
-        public Task<List<MenuItemEntity>> GetMenuItemsAsync()
+        public Task<List<MenuItemEntity>> GetSubItemsAsync(List<SubItemEntity> subItemEntity)
+        {
+            var items = _database.Table<MenuItemEntity>().ToListAsync();
+            return items;
+        }
+
+        public Task<List<MenuItemEntity>> LoadMenuItemsAsync()
         {
             var items = _database.Table<MenuItemEntity>().ToListAsync();
             return items;
@@ -51,16 +66,33 @@ namespace UI_Mobile
 
         public async Task SaveMenuItemsAsync(ICollection<MenuItemEntity> items)
         {
-            var count = 0;
-            foreach (var item in items)
-            {
-                 count += await _database.InsertAsync(item);
-            }
+            await _database.InsertAllAsync(items);
         }
 
-        public Task<int> DeleteAllMenuItemAsync()
+        public async Task SaveSubItemsAsync(ICollection<SubItemEntity> items)
         {
-            return _database.DeleteAllAsync<MenuItemEntity>();
+            await _database.InsertAllAsync(items);
+        }
+
+
+        public async Task DeleteAllMenuItemAsync()
+         {
+            await _database.DropTableAsync<MenuItemEntity>();
+            await _database.DropTableAsync<SubItemEntity>();
+            //await _database.DropTableAsync<RegistrationItemEntity>();
+            //await _database.DropTableAsync<RegistrationValueItemEntity>();
+
+            //await _database.CreateTablesAsync<MenuItemEntity, SubItemEntity, RegistrationItemEntity, RegistrationValueItemEntity>();
+        }
+
+        public async Task DeleteAllSubItemAsync()
+        {
+            await _database.DropTableAsync<MenuItemEntity>();
+            await _database.DropTableAsync<SubItemEntity>();
+            //await _database.DropTableAsync<RegistrationItemEntity>();
+            //await _database.DropTableAsync<RegistrationValueItemEntity>();
+
+            //await _database.CreateTablesAsync<MenuItemEntity, SubItemEntity, RegistrationItemEntity, RegistrationValueItemEntity>();
         }
     }
 }

@@ -80,25 +80,25 @@ namespace UI_Mobile.ViewModels
             _subItemEntity = paramSubItem;
         }
 
-        //public string Header
-        //{
-        //    get { return _menuItemEntityModel.Header; }
-        //    set
-        //    {
-        //        _menuItemEntityModel.Header = value;
-        //        NotifyPropertyChanged();
-        //    }
-        //}
-
         public string Header
         {
-            get { return _menuItemEntity.Header; }
+            get { return _menuItemEntityModel.Header; }
             set
             {
-                _menuItemEntity.Header = value;
+                _menuItemEntityModel.Header = value;
                 NotifyPropertyChanged();
             }
         }
+
+        //public string Header
+        //{
+        //    get { return _menuItemEntity.Header; }
+        //    set
+        //    {
+        //        _menuItemEntity.Header = value;
+        //        NotifyPropertyChanged();
+        //    }
+        //}
 
         //private static bool ValidateNumericField(SubItemEntityModel subItemEntity)
         //{

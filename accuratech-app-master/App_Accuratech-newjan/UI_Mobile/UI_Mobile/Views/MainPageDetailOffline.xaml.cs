@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Common;
+using Common.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,132 +16,83 @@ namespace UI_Mobile.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MainPageDetailOffline : ContentPage
     {
-        private MenuItemEntity _parentMenuItemOffline;
+        private MenuItemEntity _parentMenuItem;
+        private readonly FieldItemDataStore _fieldItemDataStore = new FieldItemDataStore();
         public MainPageDetailOffline(MenuItemEntity menuItemEntity)
         {
             InitializeComponent();
-
             MainPageDetailViewModelOffline mainPageDetailViewModelOffline = new MainPageDetailViewModelOffline();
             mainPageDetailViewModelOffline.Reset(menuItemEntity);
             BindingContext = mainPageDetailViewModelOffline;
-            _parentMenuItemOffline = menuItemEntity;
+            _parentMenuItem = menuItemEntity;
         }
 
-        protected override async void OnAppearing()
+        protected async override void OnAppearing()
         {
+            base.OnAppearing();
             Connectivity.ConnectivityChanged += Connectivity_ConnectivityChanged;
-            ClearText(_parentMenuItemOffline);
+
+            var current = Connectivity.NetworkAccess;
+            if (current == NetworkAccess.None)
+            {
+                SubItemsListView.ItemsSource = await App.MenuItemDatabase.GetSubItemsAsync(_parentMenuItem.SubItems);
+                await LabelConnection.FadeTo(1).ContinueWith((result) => { });
+            }
+            else
+            {
+                SubItemsListView.ItemsSource = await _fieldItemDataStore.GetItemsAsync();
+                await LabelConnection.FadeTo(0).ContinueWith((result) => { });
+            }
         }
 
-        protected override async void OnDisappearing()
+        protected override void OnDisappearing()
         {
             Connectivity.ConnectivityChanged -= Connectivity_ConnectivityChanged;
         }
 
         private async void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
         {
-            if (e.NetworkAccess == NetworkAccess.Internet)
+            if (e.NetworkAccess == NetworkAccess.None)
             {
-                await LabelConnection.FadeTo(0).ContinueWith((result) => { });
-            }
-            else
-            {
+                var itemsOffline = App.MenuItemDatabase.GetSubItemsAsync(_parentMenuItem.SubItems);
+                SubItemsListView.ItemsSource = await itemsOffline;
                 await LabelConnection.FadeTo(1).ContinueWith((result) => { });
             }
-        }
-
-        private async void ClearClicked(object sender, EventArgs e)
-        {
-            bool answer = await DisplayAlert("", $"Would you like to clear the registration?", "Save", "Cancel");
-            if (answer)
-                ClearText(_parentMenuItemOffline);
             else
-                return;
-        }
-
-        public void ClearText(MenuItemEntity menuItemEntity)
-        {
-            foreach (var item in menuItemEntity.SubItems)
             {
-                item.FieldValue = "";
+                await LabelConnection.FadeTo(0).ContinueWith((result) => { });
+                var items = await _fieldItemDataStore.GetItemsAsync();
+                await App.MenuItemDatabase.DeleteAllSubItemAsync();
+                await App.MenuItemDatabase.SaveSubItemsAsync(ConvertToEntity(items));
+                SubItemsListView.ItemsSource = items;
             }
         }
 
-        private void OnItemTapped(object sender, ItemTappedEventArgs e)
+        private ICollection<SubItemEntity> ConvertToEntity(ICollection<SubItemEntityModel> items)
         {
-            var selectedItem = e.Item as SubItemEntity;
-
-            if (!selectedItem.IsFieldEnabledAsBool)
+            var entities = new List<SubItemEntity>();
+            foreach (var item in items)
             {
-                return;
+                var x = new SubItemEntity();
+                x.Id = item.Id;
+                x.IsFieldEnabled = item.IsFieldEnabled;
+                x.IsFieldEnabledAsBool = item.IsFieldEnabledAsBool;
+                x.IsNumericFieldEnabled = item.IsNumericFieldEnabled;
+                x.IsScanEnabled = item.IsScanEnabled;
+                x.KeepFieldValue = item.KeepFieldValue;
+                x.KeyboardInput = item.KeyboardInput;
+                x.Length = item.Length;
+                x.MenuItemId = item.MenuItemId;
+                x.Name = item.Name;
+                x.NumericFieldEnabled = item.NumericFieldEnabled;
+                x.Offset = item.Offset;
+                x.ScanEnabled = item.ScanEnabled;
+                x.StartWith = item.StartWith;
+                x.Type = item.Type;
+                x.ValueLength = item.ValueLength;
+                entities.Add(x);
             }
-        }
-
-        public void OnScanButtonClicked(object sender, EventArgs args)
-        {
-            //if (mSelectedReader != null && mSelectedReader.IsReaderOpened)
-            //{
-            //    if (mSoftOneShotScanStarted || mSoftContinuousScanStarted)
-            //    {
-            //        StopBarcodeScan();
-            //    }
-            //    else
-            //    {
-            //        StartBarcodeScan();
-            //    }
-            //}
-        }
-
-        private async void SaveClicked(object sender, EventArgs e)
-        {
-            //var subItems = ((ListView)SubItemsListView).ItemsSource;
-            //var registration = new RegistrationModel { MenuItemId = _parentMenuItem.Id };
-
-            //foreach (var item in subItems)
-            //{
-            //    SubItemEntityModel subItemEntity = (SubItemEntityModel)item;
-            //    var fieldItemViewModel = new MainPageDetailViewModel(subItemEntity);
-
-            //    var registrationValue = new RegistrationValueModel();
-            //    registrationValue.SubItemId = subItemEntity.Id;
-            //    registrationValue.Value = subItemEntity.FieldValue;
-            //    registrationValue.SubItemName = subItemEntity.Name;
-
-            //    registration.RegistrationValues.Add(registrationValue);
-            //}
-
-            //QueueItem queueItem = new QueueItem()
-            //{
-            //    Url = "http://172.30.1.141:44333/api/registration/",
-            //    Body = JsonConvert.SerializeObject(registration),
-            //    Date = DateTime.UtcNow
-            //};
-
-            //var current = Connectivity.NetworkAccess;
-
-            //if (current == NetworkAccess.Internet)
-            //{
-            //    var entities = App.QueueDatabase.FetchQueueItems();
-            //    foreach (var entity in entities)
-            //    {
-            //        try
-            //        {
-            //            await App.QueueDatabase.DeleteQueueItemAsync(entity.Id);
-            //        }
-            //        catch (Exception)
-            //        {
-
-            //            break;
-            //        }
-            //    }
-            //    await new RegistrationDataStore().AddItemAsync(registration);
-            //    await DisplayAlert("Ok", "Saved Online", "Ok");
-            //}
-            //else
-            //{
-            //    await App.QueueDatabase.SaveQueueItemAsync(queueItem);
-            //    await DisplayAlert("Ok", "Saved Offline", "Ok");
-            //}
+            return entities;
         }
     }
 }

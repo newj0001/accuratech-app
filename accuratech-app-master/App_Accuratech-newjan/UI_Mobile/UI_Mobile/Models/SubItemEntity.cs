@@ -30,11 +30,14 @@ namespace UI_Mobile.Models
                     default: return false;
                 }
             }
-            private set { }
+             set { }
         }
 
         [ForeignKey(typeof(MenuItemEntity))]
-        public int MenuItemId { get; set; }
+        public int? MenuItemId { get; set; }
+
+        [ManyToOne(CascadeOperations = CascadeOperation.CascadeRead)]
+        public MenuItemEntity MenuItemEntity { get; set; }
 
         private string _fieldValue;
 
@@ -49,21 +52,21 @@ namespace UI_Mobile.Models
 
         public string IsFieldEnabled { get; set; }
         public string IsNumericFieldEnabled { get; set; }
-        public int NumericFieldEnabled
+        public bool NumericFieldEnabled
         {
             get
             {
                 switch (IsNumericFieldEnabled)
                 {
                     case "No":
-                        return 0;
+                        return false;
                     case "Yes":
-                        return 1;
+                        return true;
 
-                    default: return 0;
+                    default: return false;
                 }
             }
-            private set { }
+            set { }
         }
         public int FieldMinLength { get; set; }
         public int FieldMaxLength { get; set; }
@@ -71,22 +74,22 @@ namespace UI_Mobile.Models
         public string EmptyField { get; set; }
         public string KeepFieldValue { get; set; }
         public string IsScanEnabled { get; set; }
-        public int ScanEnabled
+        public bool ScanEnabled
         {
             get
             {
                 switch (IsScanEnabled)
                 {
                     case "Disabled":
-                        return 0;
+                        return false;
 
                     case "Enabled":
-                        return 1;
+                        return true;
 
-                    default: return 0;
+                    default: return false;
                 }
             }
-            private set { }
+            set { }
         }
 
         public string Type { get; set; }

@@ -5,12 +5,12 @@ using SQLiteNetExtensions.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace UI_Mobile.Models
 {
-    [Table("MenuItems")]
     public class MenuItemEntity : INotifyPropertyChanged
     {
         [PrimaryKey, AutoIncrement]
@@ -18,22 +18,12 @@ namespace UI_Mobile.Models
 
         public string Header { get; set; }
 
+        [OneToMany(CascadeOperations = CascadeOperation.CascadeRead)]
+        public List<SubItemEntity> SubItems { get; set; }
 
-        private ICollection<SubItemEntity> _subItems;
-        
-        [OneToMany]
-        public ICollection<SubItemEntity> SubItems 
-        { 
-            get => _subItems;
-            set
-            {
-                _subItems = value;
-                NotifyPropertyChanged();
-            }
-        }
 
-        [OneToMany]
-        public ICollection<RegistrationItemEntity> Registrations { get; set; }
+        //[OneToMany(CascadeOperations = CascadeOperation.CascadeRead)]
+        //public List<RegistrationItemEntity> Registrations { get; set; }
 
         public bool IsMenuEnabledAsBool
         {
@@ -50,7 +40,7 @@ namespace UI_Mobile.Models
                     default: return false;
                 }
             }
-            private set { }
+            set { }
         }
 
         public string IsMenuEnabled { get; set; }

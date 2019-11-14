@@ -9,7 +9,6 @@
     <ContentPage.Content>
         <StackLayout>
             <ListView x:Name="MenuListView"
-                      ItemsSource="{Binding MenuItemsCollection}"
                       SelectionMode="None"
                       VerticalOptions="FillAndExpand"
                       IsPullToRefreshEnabled="True"
