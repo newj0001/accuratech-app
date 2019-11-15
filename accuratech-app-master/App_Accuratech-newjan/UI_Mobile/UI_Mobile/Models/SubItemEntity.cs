@@ -2,14 +2,16 @@
 using SQLiteNetExtensions.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace UI_Mobile.Models
 {
-    [Table("SubItems")]
-    public class SubItemEntity
+    [Table("SubItemEntity")]
+    public class SubItemEntity : INotifyPropertyChanged
     {
-        [PrimaryKey, AutoIncrement]
+        [PrimaryKey]
         public int Id { get; set; }
 
         public string Name { get; set; }
@@ -47,6 +49,7 @@ namespace UI_Mobile.Models
             set
             {
                 _fieldValue = value;
+                NotifyPropertyChanged();
             }
         }
 
@@ -97,5 +100,11 @@ namespace UI_Mobile.Models
         public string StartWith { get; set; }
         public int Offset { get; set; }
         public int ValueLength { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

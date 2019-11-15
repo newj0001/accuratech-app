@@ -75,10 +75,7 @@ namespace UI_Mobile.ViewModels
             _subItemEntityModel = paramSubItem;
         }
 
-        public MainPageDetailViewModel(SubItemEntity paramSubItem)
-        {
-            _subItemEntity = paramSubItem;
-        }
+
 
         public string Header
         {

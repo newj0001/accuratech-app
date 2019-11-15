@@ -26,7 +26,6 @@ namespace UI_Mobile.Views
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-
             MenuListView.ItemsSource = null;
 
             Connectivity.ConnectivityChanged += Connectivity_ConnectivityChanged;
@@ -37,15 +36,15 @@ namespace UI_Mobile.Views
                 var itemsOnline = await _menuItemDataStore.GetItemsAsync();
                 if (itemsOnline != null)
                 {
-                    await App.MenuItemDatabase.DeleteAllMenuItemAsync();
-                    await App.MenuItemDatabase.SaveMenuItemsAsync(ConvertToEntity(itemsOnline));
+                    await App.LocalDatabase.DeleteAllMenuItemAsync();
+                    await App.LocalDatabase.SaveMenuItemsAsync(ConvertToEntity(itemsOnline));
                     MenuListView.ItemsSource = itemsOnline;
                 }
             }
 
             if (MenuListView.ItemsSource == null)
             {
-                var itemsOffline = App.MenuItemDatabase.LoadMenuItemsAsync();
+                var itemsOffline = App.LocalDatabase.LoadMenuItemsAsync();
                 MenuListView.ItemsSource = await itemsOffline;
                 await LabelConnection.FadeTo(1).ContinueWith((result) => { });
             }
@@ -60,19 +59,11 @@ namespace UI_Mobile.Views
          {
             if (e.NetworkAccess == NetworkAccess.None)
             {
-                var itemsOffline = App.MenuItemDatabase.LoadMenuItemsAsync();
-                MenuListView.ItemsSource = await itemsOffline;
-
-                //MenuListView.ItemsSource = await App.MenuItemDatabase.GetMenuItemsAsync();
                 await LabelConnection.FadeTo(1).ContinueWith((result) => { });
             }
             else
             {
                 await LabelConnection.FadeTo(0).ContinueWith((result) => { });
-                var items = await _menuItemDataStore.GetItemsAsync();
-                await App.MenuItemDatabase.DeleteAllMenuItemAsync();
-                await App.MenuItemDatabase.SaveMenuItemsAsync(ConvertToEntity(items));
-                MenuListView.ItemsSource = items;
             }
         }
 
@@ -80,14 +71,6 @@ namespace UI_Mobile.Views
         {
             var current = Connectivity.NetworkAccess;
             var selectedItem = e.Item as MenuItemEntityModel;
-
-            if (current == NetworkAccess.None)
-            {
-                var itemsOffline = App.MenuItemDatabase.LoadMenuItemsAsync();
-                MenuListView.ItemsSource = await itemsOffline;
-            }
-
-
             var selectedItemOffline = e.Item as MenuItemEntity; 
 
             if (current == NetworkAccess.Internet)
@@ -121,7 +104,7 @@ namespace UI_Mobile.Views
                 x.IsMenuEnabled = item.IsMenuEnabled;
                 x.IsMenuEnabledAsBool = item.IsMenuEnabledAsBool;
                 x.SubItems = ConvertToSubListEntity(item.SubItems);
-                //x.Registrations = ConvertToRegEntity(item.Registrations);
+
                 entities.Add(x);
             }
 

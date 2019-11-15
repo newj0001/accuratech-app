@@ -11,9 +11,10 @@ using System.Text;
 
 namespace UI_Mobile.Models
 {
+    [Table("MenuItemEntity")]
     public class MenuItemEntity : INotifyPropertyChanged
     {
-        [PrimaryKey, AutoIncrement]
+        [PrimaryKey]
         public int Id { get; set; }
 
         public string Header { get; set; }

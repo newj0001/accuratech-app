@@ -8,13 +8,13 @@
              x:Class="UI_Mobile.Views.MainPageDetailOffline"
              Title="{Binding Header}">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Clear"/>
-        <ToolbarItem Text="Save"/>
+        <ToolbarItem Text="Clear" Clicked="ClearClicked"/>
+        <ToolbarItem Text="Save" Clicked="SaveClicked"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Spacing="0" Padding="10" BackgroundColor="GhostWhite">
 
-            <ListView 
+            <ListView ItemsSource="{Binding Path=MenuItemEntity.SubItems}"
                             SelectionMode="None"
                             VerticalOptions="FillAndExpand"
                             HasUnevenRows="True"
@@ -49,7 +49,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <Button Grid.Row="4" x:Name="mScanButton" Text="Scan" HorizontalOptions="Center" VerticalOptions="End"/>
+            <Button Grid.Row="4" x:Name="mScanButton" Text="Scan" HorizontalOptions="Center" VerticalOptions="End" Clicked="OnScanButtonClicked"/>
             <Label Grid.Row="4" Grid.RowSpan="2" Margin="10" HorizontalOptions="Center" Text="Disconnected" x:Name="LabelConnection" Opacity="0"/>
         </StackLayout>
     </ContentPage.Content>

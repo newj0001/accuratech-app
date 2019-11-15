@@ -14,32 +14,19 @@ namespace UI_Mobile
 {
     public partial class App : Application
     {
-        static QueueDatabase queueDatabase;
-        static MenuItemDatabase menuItemDatabase;
+        static LocalDatabase localDatabase;
 
         public static string FilePath;
 
-        public static QueueDatabase QueueDatabase
+        public static LocalDatabase LocalDatabase
         {
             get
             {
-                if (queueDatabase == null)
+                if (localDatabase == null)
                 {
-                    queueDatabase = new QueueDatabase(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Queue.db3"));
+                    localDatabase = new LocalDatabase(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MenuItem.db3"));
                 }
-                return queueDatabase;
-            }
-        }
-
-        public static MenuItemDatabase MenuItemDatabase
-        {
-            get
-            {
-                if (menuItemDatabase == null)
-                {
-                    menuItemDatabase = new MenuItemDatabase(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MenuItem.db3"));
-                }
-                return menuItemDatabase;
+                return localDatabase;
             }
         }
 
@@ -48,6 +35,8 @@ namespace UI_Mobile
             InitializeComponent();
 
             MainPage = new MainPage();
+
+
         }
 
         protected override void OnStart()

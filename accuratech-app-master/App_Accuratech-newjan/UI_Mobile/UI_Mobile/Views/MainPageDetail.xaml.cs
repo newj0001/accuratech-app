@@ -2,14 +2,10 @@
 using Common.Services;
 using Honeywell.AIDC.CrossPlatform;
 using Newtonsoft.Json;
-using SQLite;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using UI_Mobile.Models;
@@ -25,10 +21,7 @@ namespace UI_Mobile.Views
     public partial class MainPageDetail : ContentPage, INotifyPropertyChanged
     {
         private MenuItemEntityModel _parentMenuItemModel;
-        private MenuItemEntity _parentMenuItem;
 
-
-        private SubItemEntityModel _parentSubItem = new SubItemEntityModel();
         private SynchronizationContext mUIContext = SynchronizationContext.Current;
         private const string DEFAULT_READER_KEY = "default";
         private Dictionary<string, BarcodeReader> mBarcodeReaders;
@@ -46,17 +39,6 @@ namespace UI_Mobile.Views
             BindingContext = mainPageDetailViewModel;
             mBarcodeReaders = new Dictionary<string, BarcodeReader>();
             _parentMenuItemModel = menuItemEntityModel;
-        }
-
-        public MainPageDetail(MenuItemEntity menuItemEntity)
-        {
-            InitializeComponent();
-
-            MainPageDetailViewModel mainPageDetailViewModel = new MainPageDetailViewModel();
-            mainPageDetailViewModel.Reset(menuItemEntity);
-            BindingContext = mainPageDetailViewModel;
-            mBarcodeReaders = new Dictionary<string, BarcodeReader>();
-            _parentMenuItem = menuItemEntity;
         }
 
         #region SCAN
@@ -91,7 +73,6 @@ namespace UI_Mobile.Views
             }
             else
             {
-                SubItemsListView.ItemsSource = await App.MenuItemDatabase.LoadMenuItemsAsync();
                 await LabelConnection.FadeTo(1).ContinueWith((result) => { });
             }
         }
@@ -377,7 +358,7 @@ namespace UI_Mobile.Views
         private async void SaveClicked(object sender, EventArgs e)
          {
             var subItems = ((ListView)SubItemsListView).ItemsSource;
-            var registration = new RegistrationModel { MenuItemId = _parentMenuItem.Id };
+            var registration = new RegistrationModel { MenuItemId = _parentMenuItemModel.Id };
 
             foreach (var item in subItems)
             {
@@ -391,39 +372,7 @@ namespace UI_Mobile.Views
 
                 registration.RegistrationValues.Add(registrationValue);
             }
-
-            QueueItem queueItem = new QueueItem()
-            {
-                Url = "http://172.30.1.141:44333/api/registration/",
-                Body = JsonConvert.SerializeObject(registration),
-                Date = DateTime.UtcNow
-            }; 
-
-            var current = Connectivity.NetworkAccess;
-
-            if (current == NetworkAccess.Internet)
-            {
-                var entities = App.QueueDatabase.FetchQueueItems();
-                foreach (var entity in entities)
-                {
-                    try
-                    {
-                        await App.QueueDatabase.DeleteQueueItemAsync(entity.Id);
-                    }
-                    catch (Exception)
-                    {
-
-                        break;
-                    }
-                }
                 await new RegistrationDataStore().AddItemAsync(registration);
-                await DisplayAlert("Ok", "Saved Online", "Ok");
-            }
-            else
-            {
-                await App.QueueDatabase.SaveQueueItemAsync(queueItem);
-                await DisplayAlert("Ok", "Saved Offline", "Ok");
-            }
         }
 
 

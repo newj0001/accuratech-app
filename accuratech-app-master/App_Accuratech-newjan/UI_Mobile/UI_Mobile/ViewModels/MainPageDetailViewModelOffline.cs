@@ -13,6 +13,10 @@ namespace UI_Mobile.ViewModels
         {
 
         }
+        public MainPageDetailViewModelOffline(SubItemEntity paramSubItem)
+        {
+            _subItemEntity = paramSubItem;
+        }
 
         public void Reset(MenuItemEntity menuItemEntity)
         {
@@ -26,6 +30,17 @@ namespace UI_Mobile.ViewModels
             set
             {
                 _menuItemEntity = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        private SubItemEntity _subItemEntity;
+        public SubItemEntity SubItemEntity
+        {
+            get => _subItemEntity;
+            set
+            {
+                _subItemEntity = value;
                 NotifyPropertyChanged();
             }
         }
