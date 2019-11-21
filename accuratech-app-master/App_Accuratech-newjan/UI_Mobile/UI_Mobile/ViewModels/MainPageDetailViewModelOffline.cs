@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -22,6 +23,15 @@ namespace UI_Mobile.ViewModels
         {
             MenuItemEntity = menuItemEntity;
         }
+
+        private ObservableCollection<QueueItem> _queueItems;
+
+        public ObservableCollection<QueueItem> QueueItems
+        {
+            get { return _queueItems; }
+            set { _queueItems = value; NotifyPropertyChanged(); }
+        }
+
 
         private MenuItemEntity _menuItemEntity;
         public MenuItemEntity MenuItemEntity

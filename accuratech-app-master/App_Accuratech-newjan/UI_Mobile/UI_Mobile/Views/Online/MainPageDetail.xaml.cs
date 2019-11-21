@@ -15,7 +15,7 @@ using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 
-namespace UI_Mobile.Views
+namespace UI_Mobile.Views.Online
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MainPageDetail : ContentPage, INotifyPropertyChanged

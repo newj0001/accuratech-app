@@ -1,26 +1,24 @@
 ﻿using Common;
 using Common.Services;
+using Honeywell.AIDC.CrossPlatform;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using UI_Mobile.Models;
 using UI_Mobile.ViewModels;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using Honeywell.AIDC.CrossPlatform;
-using System.Threading;
-using Newtonsoft.Json;
-using SQLite;
 
-using System.Diagnostics;
-
-namespace UI_Mobile.Views
+namespace UI_Mobile.Views.Offline
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class MainPageDetailOffline : ContentPage
+    public partial class MainPageOfflineDetail : ContentPage
     {
         #region BARCODE VARIABLES
         private BarcodeReader mSelectedReader = null;
@@ -37,7 +35,7 @@ namespace UI_Mobile.Views
         private readonly FieldItemDataStore _fieldItemDataStore = new FieldItemDataStore();
         private readonly RegistrationDataStore _registrationDataStore = new RegistrationDataStore();
 
-        public MainPageDetailOffline(MenuItemEntity menuItemEntity)
+        public MainPageOfflineDetail(MenuItemEntity menuItemEntity)
         {
             InitializeComponent();
             MainPageDetailViewModelOffline mainPageDetailViewModelOffline = new MainPageDetailViewModelOffline();
@@ -45,6 +43,7 @@ namespace UI_Mobile.Views
             BindingContext = mainPageDetailViewModelOffline;
             mBarcodeReaders = new Dictionary<string, BarcodeReader>();
             _parentMenuItem = menuItemEntity;
+
         }
 
         protected async override void OnAppearing()
@@ -52,9 +51,11 @@ namespace UI_Mobile.Views
             PopulateReaderPicker();
             await OpenBarcodeReader();
             await ToogleBarcodeReader(true);
-            await SetConnectivityLabel();
+            await SetConnectivity();
             ClearText(_parentMenuItem);
+
         }
+
         protected async override void OnDisappearing()
         {
             await CloseBarcodeReader();
@@ -302,12 +303,15 @@ namespace UI_Mobile.Views
         #endregion
 
         #region UI FUNCTIONS
-        private async Task SetConnectivityLabel()
+        private async Task SetConnectivity()
         {
+            Thread thread = new Thread(CheckQueueItemsAndSendToServer);
             var current = Connectivity.NetworkAccess;
             if (current == NetworkAccess.Internet)
             {
                 await LabelConnection.FadeTo(0).ContinueWith((result) => { });
+
+                thread.Start();
             }
             else
             {
@@ -359,33 +363,37 @@ namespace UI_Mobile.Views
         #region SAVE TO SQLITE LOCAL DATABASEQUEUE
 
         private async void SaveClicked(object sender, EventArgs e)
-         {
-            RegistrationModel registrationOffline = SaveRegistrations();
-            QueueItem queueItem = InsertIntoQueue(registrationOffline);
-            await InsertRegistrationIntoQueue(registrationOffline, queueItem);
+        {
+            RegistrationModel registration = SaveRegistrations();
+            QueueItem queueItem = InsertIntoQueue(registration);
+            await InsertRegistrationIntoQueue(registration, queueItem);
         }
 
         private async Task InsertRegistrationIntoQueue(RegistrationModel registration, QueueItem queueItem)
         {
-            // GEM I KØ
             await App.LocalDatabase.SaveQueueItem(queueItem);
-            Thread thread = new Thread(CheckQueueItemsAndSendToServer);
-            thread.Start();
-            for (int i = 0; i < 1000; i++)
-            {
-                Debug.WriteLine("Working thread...");
-                Thread.Sleep(100);
-            }
         }
 
-        private async void CheckQueueItemsAndSendToServer(object registration)
+        private async void CheckQueueItemsAndSendToServer()
         {
+            RegistrationModel registration = new RegistrationModel();
+            List<QueueItem> columnBody = App.LocalDatabase.GetRegistrationFromBody();
+            List<QueueItem> queueItems = JsonConvert.DeserializeObject<List<QueueItem>>(columnBody.ToString());
+            foreach (var item in queueItems)
+            {
+                var test = item.Body;
+                RegistrationModel test1 = JsonConvert.DeserializeObject<RegistrationModel>(test);
+                ICollection<RegistrationValueModel> test3 = test1.RegistrationValues;
+
+            }
+            //queueItem[0].Body.;
+
             try
             {
                 var current = Connectivity.NetworkAccess;
                 if (current == NetworkAccess.Internet)
                 {
-                    await _registrationDataStore.AddItemAsync((RegistrationModel)registration);
+                    await _registrationDataStore.AddItemAsync(registration);
 
                     var entities = App.LocalDatabase.FetchQueueItems();
 
@@ -403,45 +411,13 @@ namespace UI_Mobile.Views
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
 
-                throw;
+                throw e;
             }
 
-            for (int i = 0; i < 1000; i++)
-            {
-                Debug.WriteLine("Working thread...");
-                Thread.Sleep(100);
-            }
         }
-
-        //private async Task CheckItemInQueue(RegistrationModel registration)
-        //{
-        //    // SEND TIL SERVER
-        //    await _registrationDataStore.AddItemAsync(registration);
-
-        //    //PRØV IGEN SENERE
-        //    if (current == NetworkAccess.None)
-        //    {
-        //        var itemsOnline = _registrationDataStore.AddItemAsync(registration);
-        //        if (itemsOnline != null)
-        //        {
-        //            var entities = App.LocalDatabase.FetchQueueItems();
-        //            foreach (var entity in entities)
-        //            {
-        //                try
-        //                {
-        //                    await App.LocalDatabase.DeleteQueueItemAsync(entity.Id);
-        //                }
-        //                catch (SQLiteException)
-        //                {
-        //                    break;
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
 
         private RegistrationModel SaveRegistrations()
         {
@@ -452,6 +428,7 @@ namespace UI_Mobile.Views
             {
                 SubItemEntity subItemEntity = (SubItemEntity)item;
                 var mainPageDetailViewModel = new MainPageDetailViewModelOffline(subItemEntity);
+
 
                 var registrationValue = new RegistrationValueModel();
                 registrationValue.SubItemId = subItemEntity.Id;
@@ -474,33 +451,5 @@ namespace UI_Mobile.Views
         }
 
         #endregion
-
-
-        //private ICollection<SubItemEntity> ConvertToEntity(ICollection<SubItemEntityModel> items)
-        //{
-        //    var entities = new List<SubItemEntity>();
-        //    foreach (var item in items)
-        //    {
-        //        var x = new SubItemEntity();
-        //        x.Id = item.Id;
-        //        x.IsFieldEnabled = item.IsFieldEnabled;
-        //        x.IsFieldEnabledAsBool = item.IsFieldEnabledAsBool;
-        //        x.IsNumericFieldEnabled = item.IsNumericFieldEnabled;
-        //        x.IsScanEnabled = item.IsScanEnabled;
-        //        x.KeepFieldValue = item.KeepFieldValue;
-        //        x.KeyboardInput = item.KeyboardInput;
-        //        x.Length = item.Length;
-        //        x.MenuItemId = item.MenuItemId;
-        //        x.Name = item.Name;
-        //        x.NumericFieldEnabled = item.NumericFieldEnabled;
-        //        x.Offset = item.Offset;
-        //        x.ScanEnabled = item.ScanEnabled;
-        //        x.StartWith = item.StartWith;
-        //        x.Type = item.Type;
-        //        x.ValueLength = item.ValueLength;
-        //        entities.Add(x);
-        //    }
-        //    return entities;
-        //}
     }
 }

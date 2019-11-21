@@ -9,14 +9,22 @@ using System.Linq;
 using SQLitePCL;
 using System.Diagnostics;
 using System.IO;
+using UI_Mobile.Views.Online;
+using UI_Mobile.Views.Offline;
+using Xamarin.Essentials;
+using UI_Mobile.ViewModels;
+using System.Threading.Tasks;
+using Android;
 
 namespace UI_Mobile
 {
     public partial class App : Application
     {
+        private readonly MenuItemDataStore _menuItemDataStore = new MenuItemDataStore();
+
         static LocalDatabase localDatabase;
 
-        public static string FilePath;
+        public static string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MenuItem.db3");
 
         public static LocalDatabase LocalDatabase
         {
@@ -24,24 +32,36 @@ namespace UI_Mobile
             {
                 if (localDatabase == null)
                 {
-                    localDatabase = new LocalDatabase(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MenuItem.db3"));
+                    localDatabase = new LocalDatabase(dbPath);
                 }
                 return localDatabase;
             }
         }
 
+
         public App()
         {
             InitializeComponent();
+            SetMainPage();
+        }
 
-            MainPage = new MainPage();
-
-
+        private void SetMainPage()
+        {
+            var current = Connectivity.NetworkAccess;
+            if (current == NetworkAccess.Internet)
+            {
+                MainPage = new MainPage();
+            }
+            else
+            {
+                MainPage = new MainPageOffline();
+            }
         }
 
         protected override void OnStart()
         {
             // Handle when your app starts
+
         }
 
         protected override void OnSleep()

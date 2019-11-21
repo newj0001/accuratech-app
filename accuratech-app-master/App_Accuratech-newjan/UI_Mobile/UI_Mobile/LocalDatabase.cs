@@ -36,6 +36,12 @@ namespace UI_Mobile
             return _database.Table<QueueItem>().ToList();
         }
 
+        public List<QueueItem> GetRegistrationFromBody()
+        {
+            return _database.Query<QueueItem>("SELECT Body FROM QueueItems");
+            
+        }
+
         public Task<int> SaveQueueItem(QueueItem queueItem)
         {
             if (queueItem.Id != 0)

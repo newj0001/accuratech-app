@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:UI_Mobile.Behaviors"
              mc:Ignorable="d"
-             x:Class="UI_Mobile.Views.MainPageDetail"
+             x:Class="UI_Mobile.Views.Online.MainPageDetailOffline"
              Title="{Binding Header}">
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Clear" Clicked="ClearClicked"/>
@@ -14,21 +14,21 @@
     <ContentPage.Content>
         <StackLayout Spacing="0" Padding="10" BackgroundColor="GhostWhite">
 
-            <ListView ItemsSource="{Binding Path=MenuItemEntityModel.SubItems}"
+            <ListView ItemsSource="{Binding Path=MenuItemEntity.SubItems}"
                             SelectionMode="None"
                             VerticalOptions="FillAndExpand"
                             HasUnevenRows="True"
                             IsPullToRefreshEnabled="True"
                             CachingStrategy="RecycleElement"
                             x:Name="SubItemsListView"
-                            ItemTapped="OnItemTapped">
+                            >
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout>
-                            <StackLayout Orientation="Horizontal">
-                                <Label FontSize="14" TextColor="Black" HorizontalOptions="Start" VerticalOptions="Center" WidthRequest="100" Text="{Binding Name}" />
-                                <Entry x:Name="FieldEntry"
+                                <StackLayout Orientation="Horizontal">
+                                    <Label FontSize="14" TextColor="Black" HorizontalOptions="Start" VerticalOptions="Center" WidthRequest="100" Text="{Binding Name}" />
+                                    <Entry x:Name="FieldEntry"
                                         HorizontalOptions="FillAndExpand"
                                         TextColor="Black" 
                                     BackgroundColor="GhostWhite"
@@ -39,10 +39,10 @@
                                         <Entry.Behaviors>
                                             <local:NumericValidationBehavior/>
                                         </Entry.Behaviors>
-                                    
-                                </Entry>
-                            </StackLayout>
-                            <Label HorizontalTextAlignment="Center" Text="{Binding DisplayMessage}" TextColor="Red"/>
+
+                                    </Entry>
+                                </StackLayout>
+                                <Label HorizontalTextAlignment="Center" Text="{Binding DisplayMessage}" TextColor="Red"/>
                             </StackLayout>
 
                         </ViewCell>

@@ -1,26 +1,27 @@
 ﻿using Common;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using UI_Mobile.Models;
 using UI_Mobile.ViewModels;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace UI_Mobile.Views
+namespace UI_Mobile.Views.Offline
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class MainPageMaster : ContentPage
+    public partial class MainPageOfflineMaster : ContentPage
     {
         private readonly MenuItemDataStore _menuItemDataStore = new MenuItemDataStore();
         private MenuItemEntityModel _parentMenuItem;
-        MainPageMasterViewModel mainPageMasterViewModel = new MainPageMasterViewModel();
-
-        public MainPageMaster()
+        MainPageMasterViewModelOffline mainPageMasterViewModelOffline = new MainPageMasterViewModelOffline();
+        public MainPageOfflineMaster()
         {
             InitializeComponent();
-            BindingContext = mainPageMasterViewModel;
+            BindingContext = mainPageMasterViewModelOffline;
         }
 
         protected async override void OnAppearing()
@@ -54,9 +55,8 @@ namespace UI_Mobile.Views
         {
             Connectivity.ConnectivityChanged -= Connectivity_ConnectivityChanged;
         }
-
         private async void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
-         {
+        {
             if (e.NetworkAccess == NetworkAccess.None)
             {
                 await LabelConnection.FadeTo(1).ContinueWith((result) => { });
@@ -66,29 +66,17 @@ namespace UI_Mobile.Views
                 await LabelConnection.FadeTo(0).ContinueWith((result) => { });
             }
         }
-
         private async void OnItemSelected(object sender, ItemTappedEventArgs e)
         {
             var current = Connectivity.NetworkAccess;
-            var selectedItem = e.Item as MenuItemEntityModel;
-            var selectedItemOffline = e.Item as MenuItemEntity; 
-
-            if (current == NetworkAccess.Internet)
-            {
-                if (!selectedItem.IsMenuEnabledAsBool)
-                {
-                    return;
-                }
-                await Navigation.PushAsync(new MainPageDetail(selectedItem));
-                ((ListView)sender).SelectedItem = null;
-            }
-            else if (current == NetworkAccess.None)
+            var selectedItemOffline = e.Item as MenuItemEntity;
+            if (current == NetworkAccess.None)
             {
                 if (!selectedItemOffline.IsMenuEnabledAsBool)
                 {
                     return;
                 }
-                await Navigation.PushAsync(new MainPageDetailOffline(selectedItemOffline));
+                await Navigation.PushAsync(new MainPageOfflineDetail(selectedItemOffline));
                 ((ListView)sender).SelectedItem = null;
             }
         }
@@ -110,44 +98,6 @@ namespace UI_Mobile.Views
 
             return entities;
         }
-
-        //private List<RegistrationItemEntity> ConvertToRegEntity(ICollection<RegistrationModel> registrations)
-        //{
-        //    var entities = new List<RegistrationItemEntity>();
-        //    foreach (var item in registrations)
-        //    {
-        //        var x = new RegistrationItemEntity();
-        //        {
-        //            x.Id = item.Id;
-        //            x.MenuItemId = item.MenuItemId;
-        //            x.RegistrationValues = ConvertToRegValueEntity(item.RegistrationValues);
-        //            x.Timestamp = item.Timestamp;
-
-        //            entities.Add(x);
-        //        }
-        //    }
-        //    return entities;
-        //}
-
-
-        //private List<RegistrationValueItemEntity> ConvertToRegValueEntity(ICollection<RegistrationValueModel> registrationValues)
-        //{
-        //    var entities = new List<RegistrationValueItemEntity>();
-        //    foreach (var item in registrationValues)
-        //    {
-        //        var x = new RegistrationValueItemEntity();
-        //        {
-        //            x.Id = item.Id;
-        //            x.RegistrationId = item.RegistrationId;
-        //            x.SubItemId = item.SubItemId;
-        //            x.SubItemName = item.SubItemName;
-        //            x.Value = item.Value;
-
-        //            entities.Add(x);
-        //        }
-        //    }
-        //    return entities;
-        //}
 
         private List<SubItemEntity> ConvertToSubListEntity(ICollection<SubItemEntityModel> subItems)
         {
@@ -179,6 +129,5 @@ namespace UI_Mobile.Views
             return entities;
         }
 
-       
     }
 }

@@ -7,13 +7,13 @@ using UI_Mobile.Models;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-namespace UI_Mobile.Views
+namespace UI_Mobile.Views.Offline
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class MainPage : MasterDetailPage
+    public partial class MainPageOffline : MasterDetailPage
     {
         Dictionary<int, NavigationPage> MenuPages = new Dictionary<int, NavigationPage>();
-        public MainPage()
+        public MainPageOffline()
         {
             InitializeComponent();
 
@@ -29,7 +29,7 @@ namespace UI_Mobile.Views
                 switch (id)
                 {
                     case (int)MenuItemType.Browse:
-                        MenuPages.Add(id, new NavigationPage(new MainPageMaster()));
+                        MenuPages.Add(id, new NavigationPage(new MainPageOfflineMaster()));
                         break;
                 }
             }

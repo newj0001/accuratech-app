@@ -4,13 +4,12 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="UI_Mobile.Views.MainPage"
-             xmlns:views="clr-namespace:UI_Mobile.Views"
-             xmlns:pages="clr-namespace:UI_Mobile.Views">
+             x:Class="UI_Mobile.Views.Offline.MainPageOffline"
+             xmlns:views="clr-namespace:UI_Mobile.Views.Offline">
     <MasterDetailPage.Master>
-        <views:MenuPage />
+        <views:MenuPageOffline />
     </MasterDetailPage.Master>
-
+    
     <MasterDetailPage.Detail>
         <NavigationPage>
             <NavigationPage.Icon>
@@ -19,9 +18,8 @@
                 </OnPlatform>
             </NavigationPage.Icon>
             <x:Arguments>
-                <views:MainPageMaster />
+                <views:MainPageOfflineMaster />
             </x:Arguments>
         </NavigationPage>
     </MasterDetailPage.Detail>
-
 </MasterDetailPage>
