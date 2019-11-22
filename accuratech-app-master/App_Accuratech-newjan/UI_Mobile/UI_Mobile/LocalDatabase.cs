@@ -22,7 +22,8 @@ namespace UI_Mobile
                 _database = new SQLiteConnection(dbPath);
                 _database.CreateTable<MenuItemEntity>();
                 _database.CreateTable<SubItemEntity>();
-                _database.CreateTable<QueueItem>();
+                _database.CreateTable<RegistrationItemEntity>();
+                _database.CreateTable<RegistrationValueItemEntity>();
             }
             catch (SQLiteException ex)
             {
@@ -31,32 +32,35 @@ namespace UI_Mobile
             }
         }
 
-        public List<QueueItem> FetchQueueItems()
+        public List<RegistrationItemEntity> FetchRegistrationItems()
         {
-            return _database.Table<QueueItem>().ToList();
+            return _database.GetAllWithChildren<RegistrationItemEntity>().ToList();
         }
 
-        public List<QueueItem> GetRegistrationFromBody()
+        public Task SaveRegistrationItem(RegistrationItemEntity registrationItemEntity)
         {
-            return _database.Query<QueueItem>("SELECT Body FROM QueueItems");
-            
-        }
-
-        public Task<int> SaveQueueItem(QueueItem queueItem)
-        {
-            if (queueItem.Id != 0)
+            if (registrationItemEntity.Id != 0)
             {
-                return Task.FromResult(_database.Update(queueItem));
+                _database.UpdateWithChildren(registrationItemEntity);
             }
             else
             {
-                return Task.FromResult(_database.Insert(queueItem));
+                _database.Insert(registrationItemEntity);
+
+                foreach (var registrationValue in registrationItemEntity.RegistrationValues)
+                {
+                    registrationValue.RegistrationId = registrationItemEntity.Id;
+                }
+
+                _database.InsertAll(registrationItemEntity.RegistrationValues);
             }
+
+            return Task.CompletedTask;
         }
 
-        public Task<int> DeleteQueueItemAsync(int id)
+        public Task<int> DeleteAllRegistrationsAsync()
         {
-            return Task.FromResult(_database.Delete(id));
+            return Task.FromResult(_database.DropTable<RegistrationItemEntity>());
         }
 
         public Task<List<MenuItemEntity>> LoadMenuItemsAsync()
@@ -73,10 +77,20 @@ namespace UI_Mobile
             return Task.CompletedTask;
         }
 
+        public Task DeleteAllRegistrationItemsAsync()
+        {
+            _database.DropTable<RegistrationItemEntity>();
+            _database.DropTable<RegistrationValueItemEntity>();
+            
+            _database.CreateTables<RegistrationItemEntity, RegistrationValueItemEntity>();
+            return Task.CompletedTask;
+        }
+
         public Task DeleteAllMenuItemAsync()
          {
             _database.DropTable<MenuItemEntity>();
             _database.DropTable<SubItemEntity>();
+
             _database.CreateTables<MenuItemEntity, SubItemEntity>();
             return Task.CompletedTask;
         }

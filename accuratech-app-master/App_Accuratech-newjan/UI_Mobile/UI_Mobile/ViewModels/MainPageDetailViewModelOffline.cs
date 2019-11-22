@@ -12,7 +12,7 @@ namespace UI_Mobile.ViewModels
     {
         public MainPageDetailViewModelOffline()
         {
-
+            Registrations = App.LocalDatabase.FetchRegistrationItems();
         }
         public MainPageDetailViewModelOffline(SubItemEntity paramSubItem)
         {
@@ -24,12 +24,13 @@ namespace UI_Mobile.ViewModels
             MenuItemEntity = menuItemEntity;
         }
 
-        private ObservableCollection<QueueItem> _queueItems;
 
-        public ObservableCollection<QueueItem> QueueItems
+        private List<RegistrationItemEntity> _registrations;
+
+        public List<RegistrationItemEntity> Registrations
         {
-            get { return _queueItems; }
-            set { _queueItems = value; NotifyPropertyChanged(); }
+            get { return _registrations; }
+            set { _registrations = value; NotifyPropertyChanged(); }
         }
 
 

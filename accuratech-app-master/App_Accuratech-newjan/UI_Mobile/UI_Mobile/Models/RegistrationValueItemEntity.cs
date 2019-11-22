@@ -9,16 +9,13 @@ namespace UI_Mobile.Models
     [Table("RegistrationValueItemEntity")]
     public class RegistrationValueItemEntity
     {
-        private string _value;
 
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
         public int SubItemId { get; set; }
         public string SubItemName { get; set; }
 
-        [OneToOne(CascadeOperations = CascadeOperation.CascadeRead)]
-        public SubItemEntity SubItemEntity { get; set; }
-
+        private string _value;
         public string Value
         {
             get => _value;

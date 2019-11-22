@@ -20,7 +20,8 @@ namespace UI_Mobile
 {
     public partial class App : Application
     {
-        private readonly MenuItemDataStore _menuItemDataStore = new MenuItemDataStore();
+        private static Stopwatch stopWatch = new Stopwatch();
+        BackgroundThread backgroundThread = new BackgroundThread();
 
         static LocalDatabase localDatabase;
 
@@ -61,17 +62,33 @@ namespace UI_Mobile
         protected override void OnStart()
         {
             // Handle when your app starts
+            if (!stopWatch.IsRunning)
+            {
+                stopWatch.Start();
+            }
+
+            Device.StartTimer(new TimeSpan(0, 0, 30), () =>
+            {
+
+                Debug.WriteLine("Sending local registrations to server");
+
+                backgroundThread.CheckRegistrationsInQueueAndSendToServer();
+
+                return true;
+            });
 
         }
 
         protected override void OnSleep()
         {
             // Handle when your app sleeps
+            stopWatch.Reset();
         }
 
         protected override void OnResume()
         {
             // Handle when your app resumes
+            stopWatch.Start();
         }
     }
 }

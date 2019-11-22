@@ -53,7 +53,6 @@ namespace UI_Mobile.Views.Offline
             await ToogleBarcodeReader(true);
             await SetConnectivity();
             ClearText(_parentMenuItem);
-
         }
 
         protected async override void OnDisappearing()
@@ -305,13 +304,10 @@ namespace UI_Mobile.Views.Offline
         #region UI FUNCTIONS
         private async Task SetConnectivity()
         {
-            Thread thread = new Thread(CheckQueueItemsAndSendToServer);
             var current = Connectivity.NetworkAccess;
             if (current == NetworkAccess.Internet)
             {
                 await LabelConnection.FadeTo(0).ContinueWith((result) => { });
-
-                thread.Start();
             }
             else
             {
@@ -361,68 +357,18 @@ namespace UI_Mobile.Views.Offline
         #endregion
 
         #region SAVE TO SQLITE LOCAL DATABASEQUEUE
-
-        private async void SaveClicked(object sender, EventArgs e)
+        int counter = 0;
+        private void SaveClicked(object sender, EventArgs e)
         {
-            RegistrationModel registration = SaveRegistrations();
-            QueueItem queueItem = InsertIntoQueue(registration);
-            await InsertRegistrationIntoQueue(registration, queueItem);
-        }
-
-        private async Task InsertRegistrationIntoQueue(RegistrationModel registration, QueueItem queueItem)
-        {
-            await App.LocalDatabase.SaveQueueItem(queueItem);
-        }
-
-        private async void CheckQueueItemsAndSendToServer()
-        {
-            RegistrationModel registration = new RegistrationModel();
-            List<QueueItem> columnBody = App.LocalDatabase.GetRegistrationFromBody();
-            List<QueueItem> queueItems = JsonConvert.DeserializeObject<List<QueueItem>>(columnBody.ToString());
-            foreach (var item in queueItems)
-            {
-                var test = item.Body;
-                RegistrationModel test1 = JsonConvert.DeserializeObject<RegistrationModel>(test);
-                ICollection<RegistrationValueModel> test3 = test1.RegistrationValues;
-
-            }
-            //queueItem[0].Body.;
-
-            try
-            {
-                var current = Connectivity.NetworkAccess;
-                if (current == NetworkAccess.Internet)
-                {
-                    await _registrationDataStore.AddItemAsync(registration);
-
-                    var entities = App.LocalDatabase.FetchQueueItems();
-
-                    foreach (var entity in entities)
-                    {
-                        try
-                        {
-                            await App.LocalDatabase.DeleteQueueItemAsync(entity.Id);
-                        }
-                        catch (Exception)
-                        {
-
-                            break;
-                        }
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-
-                throw e;
-            }
+            SaveRegistrationsOffline();
+            MainPageDetailViewModelOffline vm = new MainPageDetailViewModelOffline();
 
         }
 
-        private RegistrationModel SaveRegistrations()
+        private RegistrationItemEntity SaveRegistrationsOffline()
         {
             var subItemsOffline = ((ListView)SubItemsListView).ItemsSource;
-            var registrationOffline = new RegistrationModel { MenuItemId = _parentMenuItem.Id };
+            var registrationOffline = new RegistrationItemEntity {MenuItemId = _parentMenuItem.Id, RegistrationValues = new List<RegistrationValueItemEntity>() };
 
             foreach (var item in subItemsOffline)
             {
@@ -430,26 +376,16 @@ namespace UI_Mobile.Views.Offline
                 var mainPageDetailViewModel = new MainPageDetailViewModelOffline(subItemEntity);
 
 
-                var registrationValue = new RegistrationValueModel();
+                var registrationValue = new RegistrationValueItemEntity();
                 registrationValue.SubItemId = subItemEntity.Id;
                 registrationValue.Value = subItemEntity.FieldValue;
                 registrationValue.SubItemName = subItemEntity.Name;
                 registrationOffline.RegistrationValues.Add(registrationValue);
             }
-
+            App.LocalDatabase.SaveRegistrationItem(registrationOffline);
             return registrationOffline;
         }
-
-        private static QueueItem InsertIntoQueue(RegistrationModel registration)
-        {
-            return new QueueItem()
-            {
-                Url = "http://172.30.1.141:44333/api/registration/",
-                Body = JsonConvert.SerializeObject(registration),
-                Date = DateTime.UtcNow
-            };
-        }
+    }
 
         #endregion
-    }
 }

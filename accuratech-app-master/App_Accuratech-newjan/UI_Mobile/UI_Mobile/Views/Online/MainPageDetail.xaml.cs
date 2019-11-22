@@ -358,7 +358,10 @@ namespace UI_Mobile.Views.Online
         private async void SaveClicked(object sender, EventArgs e)
          {
             var subItems = ((ListView)SubItemsListView).ItemsSource;
-            var registration = new RegistrationModel { MenuItemId = _parentMenuItemModel.Id };
+            var registration = new RegistrationModel 
+            { 
+                MenuItemId = _parentMenuItemModel.Id ,
+            };
 
             foreach (var item in subItems)
             {
@@ -369,7 +372,7 @@ namespace UI_Mobile.Views.Online
                 registrationValue.SubItemId = subItemEntity.Id;
                 registrationValue.Value = subItemEntity.FieldValue;
                 registrationValue.SubItemName = subItemEntity.Name;
-
+                
                 registration.RegistrationValues.Add(registrationValue);
             }
                 await new RegistrationDataStore().AddItemAsync(registration);

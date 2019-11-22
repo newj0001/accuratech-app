@@ -44,6 +44,12 @@
     <Reference Include="EO.Wpf, Version=19.2.69.0, Culture=neutral, PublicKeyToken=e92353a6bf73fffc, processorArchitecture=MSIL">
       <HintPath>..\packages\EO.Wpf.19.2.69\lib\EO.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="Matcha.BackgroundService, Version=1.0.5453.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Matcha.BackgroundService.1.0.5478\lib\net46\Matcha.BackgroundService.dll</HintPath>
+    </Reference>
+    <Reference Include="Matcha.BackgroundService.Gtk, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Matcha.BackgroundService.1.0.5478\lib\net46\Matcha.BackgroundService.Gtk.dll</HintPath>
+    </Reference>
     <Reference Include="MaterialDesignColors, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignColors.1.2.1-ci636\lib\net45\MaterialDesignColors.dll</HintPath>
     </Reference>
@@ -59,6 +65,11 @@
     <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
+    <Reference Include="System.Reactive, Version=4.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reactive.4.0.0\lib\net46\System.Reactive.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />

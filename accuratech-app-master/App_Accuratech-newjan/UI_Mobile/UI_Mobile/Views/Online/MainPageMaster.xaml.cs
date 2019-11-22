@@ -82,15 +82,15 @@ namespace UI_Mobile.Views.Online
                 await Navigation.PushAsync(new MainPageDetail(selectedItem));
                 ((ListView)sender).SelectedItem = null;
             }
-            else if (current == NetworkAccess.None)
-            {
-                if (!selectedItemOffline.IsMenuEnabledAsBool)
-                {
-                    return;
-                }
-                await Navigation.PushAsync(new MainPageDetailOffline(selectedItemOffline));
-                ((ListView)sender).SelectedItem = null;
-            }
+            //else if (current == NetworkAccess.None)
+            //{
+            //    if (!selectedItemOffline.IsMenuEnabledAsBool)
+            //    {
+            //        return;
+            //    }
+            //    await Navigation.PushAsync(new MainPageDetailOffline(selectedItemOffline));
+            //    ((ListView)sender).SelectedItem = null;
+            //}
         }
 
         private ICollection<MenuItemEntity> ConvertToEntity(ICollection<MenuItemEntityModel> items)

@@ -70,6 +70,7 @@ namespace UI_Mobile.Views.Offline
         {
             var current = Connectivity.NetworkAccess;
             var selectedItemOffline = e.Item as MenuItemEntity;
+            var selectedItemOnline = e.Item as MenuItemEntityModel;
             if (current == NetworkAccess.None)
             {
                 if (!selectedItemOffline.IsMenuEnabledAsBool)
