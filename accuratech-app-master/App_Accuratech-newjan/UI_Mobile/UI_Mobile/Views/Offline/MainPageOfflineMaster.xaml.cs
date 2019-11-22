@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UI_Mobile.Models;
 using UI_Mobile.ViewModels;
+using UI_Mobile.Views.Online;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -79,6 +80,14 @@ namespace UI_Mobile.Views.Offline
                 }
                 await Navigation.PushAsync(new MainPageOfflineDetail(selectedItemOffline));
                 ((ListView)sender).SelectedItem = null;
+            }
+            if (current == NetworkAccess.Internet)
+            {
+                if (!selectedItemOnline.IsMenuEnabledAsBool)
+                {
+                    return;
+                }
+                await Navigation.PushAsync(new MainPageDetail(selectedItemOnline));
             }
         }
 

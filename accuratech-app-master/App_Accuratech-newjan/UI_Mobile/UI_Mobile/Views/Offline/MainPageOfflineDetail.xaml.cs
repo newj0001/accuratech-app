@@ -44,6 +44,13 @@ namespace UI_Mobile.Views.Offline
             mBarcodeReaders = new Dictionary<string, BarcodeReader>();
             _parentMenuItem = menuItemEntity;
 
+
+            var counter = mainPageDetailViewModelOffline.Registrations.Count;
+            
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                LabelQueue.Text = string.Format("{0} items in queue", counter);
+            });
         }
 
         protected async override void OnAppearing()
@@ -357,11 +364,10 @@ namespace UI_Mobile.Views.Offline
         #endregion
 
         #region SAVE TO SQLITE LOCAL DATABASEQUEUE
-        int counter = 0;
+
         private void SaveClicked(object sender, EventArgs e)
         {
             SaveRegistrationsOffline();
-            MainPageDetailViewModelOffline vm = new MainPageDetailViewModelOffline();
 
         }
 

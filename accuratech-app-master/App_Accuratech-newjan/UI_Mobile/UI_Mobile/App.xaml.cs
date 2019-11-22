@@ -67,7 +67,7 @@ namespace UI_Mobile
                 stopWatch.Start();
             }
 
-            Device.StartTimer(new TimeSpan(0, 0, 30), () =>
+            Device.StartTimer(new TimeSpan(0, 0, 10), () =>
             {
 
                 Debug.WriteLine("Sending local registrations to server");
