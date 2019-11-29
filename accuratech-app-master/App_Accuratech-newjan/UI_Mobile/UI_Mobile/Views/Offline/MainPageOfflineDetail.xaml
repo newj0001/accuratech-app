@@ -36,10 +36,6 @@
                                     Text="{Binding FieldValue}"
                                     FontSize="16" 
                                     IsSpellCheckEnabled="False">
-                                        <Entry.Behaviors>
-                                            <local:NumericValidationBehavior/>
-                                        </Entry.Behaviors>
-
                                     </Entry>
                                 </StackLayout>
                                 <Label HorizontalTextAlignment="Center" Text="{Binding DisplayMessage}" TextColor="Red"/>

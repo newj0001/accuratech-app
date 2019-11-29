@@ -14,7 +14,6 @@ using UI_Mobile.Views.Offline;
 using Xamarin.Essentials;
 using UI_Mobile.ViewModels;
 using System.Threading.Tasks;
-using Android;
 
 namespace UI_Mobile
 {
@@ -48,15 +47,8 @@ namespace UI_Mobile
 
         private void SetMainPage()
         {
-            var current = Connectivity.NetworkAccess;
-            if (current == NetworkAccess.Internet)
-            {
-                MainPage = new MainPage();
-            }
-            else
-            {
-                MainPage = new MainPageOffline();
-            }
+
+              MainPage = new MainPageOffline();
         }
 
         protected override void OnStart()

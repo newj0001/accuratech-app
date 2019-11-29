@@ -16,9 +16,6 @@ namespace UI_Mobile.Models
         [ForeignKey(typeof(MenuItemEntity))]
         public int MenuItemId { get; set; }
 
-        //[ManyToOne(CascadeOperations = CascadeOperation.CascadeRead)]
-        //public MenuItemEntity MenuItemEntity { get; set; }
-
         [OneToMany(CascadeOperations = CascadeOperation.CascadeRead)]
         public List<RegistrationValueItemEntity> RegistrationValues { get; set; }
     }

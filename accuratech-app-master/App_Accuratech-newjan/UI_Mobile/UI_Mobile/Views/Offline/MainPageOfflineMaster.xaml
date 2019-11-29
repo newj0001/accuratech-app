@@ -8,6 +8,7 @@
              Title="Browse">
     <ContentPage.Content>
         <StackLayout>
+        <StackLayout>
             <ListView x:Name="MenuListView"
                       SelectionMode="None"
                       VerticalOptions="FillAndExpand"
@@ -44,6 +45,10 @@
                 </ListView.ItemTemplate>
             </ListView>
             <Label Grid.Row="4" Grid.RowSpan="2" Margin="10" HorizontalOptions="Center" Text="Disconnected" x:Name="LabelConnection" Opacity="0"/>
+        </StackLayout>
+        <StackLayout BackgroundColor="#003152" Padding="10">
+            <Label x:Name="LabelQueue" FontSize="14" TextColor="White" HorizontalOptions="Start" />
+        </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

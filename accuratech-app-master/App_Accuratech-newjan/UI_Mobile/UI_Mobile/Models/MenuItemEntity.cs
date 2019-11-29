@@ -12,7 +12,7 @@ using System.Text;
 namespace UI_Mobile.Models
 {
     [Table("MenuItemEntity")]
-    public class MenuItemEntity : INotifyPropertyChanged
+    public class MenuItemEntity
     {
         [PrimaryKey]
         public int Id { get; set; }
@@ -21,10 +21,6 @@ namespace UI_Mobile.Models
 
         [OneToMany(CascadeOperations = CascadeOperation.CascadeRead)]
         public List<SubItemEntity> SubItems { get; set; }
-
-
-        //[OneToMany(CascadeOperations = CascadeOperation.CascadeRead)]
-        //public List<RegistrationItemEntity> Registrations { get; set; }
 
         public bool IsMenuEnabledAsBool
         {
@@ -45,11 +41,5 @@ namespace UI_Mobile.Models
         }
 
         public string IsMenuEnabled { get; set; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

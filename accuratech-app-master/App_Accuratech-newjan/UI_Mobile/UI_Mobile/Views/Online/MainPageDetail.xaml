@@ -36,9 +36,9 @@
                                     Text="{Binding FieldValue}"
                                     FontSize="16" 
                                     IsSpellCheckEnabled="False">
-                                        <Entry.Behaviors>
+                                        <!--<Entry.Behaviors>
                                             <local:NumericValidationBehavior/>
-                                        </Entry.Behaviors>
+                                        </Entry.Behaviors>-->
                                     
                                 </Entry>
                             </StackLayout>

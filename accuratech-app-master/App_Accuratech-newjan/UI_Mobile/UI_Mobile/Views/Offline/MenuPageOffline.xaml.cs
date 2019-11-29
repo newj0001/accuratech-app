@@ -22,6 +22,7 @@ namespace UI_Mobile.Views.Offline
                 new HomeMenuItem {Id = MenuItemType.Browse, Title="Browse" }
             };
 
+
             ListViewMenu.ItemsSource = menuItems;
 
             ListViewMenu.SelectedItem = menuItems[0];

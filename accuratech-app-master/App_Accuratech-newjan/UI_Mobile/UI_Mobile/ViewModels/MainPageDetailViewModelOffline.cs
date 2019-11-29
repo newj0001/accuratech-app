@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
 using UI_Mobile.Models;
-using Xamarin.Forms;
 
 namespace UI_Mobile.ViewModels
 {
@@ -13,8 +8,9 @@ namespace UI_Mobile.ViewModels
     {
         public MainPageDetailViewModelOffline()
         {
-            Registrations = App.LocalDatabase.FetchRegistrationItems();
+
         }
+
         public MainPageDetailViewModelOffline(SubItemEntity paramSubItem)
         {
             _subItemEntity = paramSubItem;
@@ -24,17 +20,7 @@ namespace UI_Mobile.ViewModels
         {
             MenuItemEntity = menuItemEntity;
         }
-
-
-        private List<RegistrationItemEntity> _registrations;
-
-        public List<RegistrationItemEntity> Registrations
-        {
-            get { return _registrations; }
-            set { _registrations = value; NotifyPropertyChanged(); }
-        }
-
-
+        
         private MenuItemEntity _menuItemEntity;
         public MenuItemEntity MenuItemEntity
         {
@@ -56,6 +42,7 @@ namespace UI_Mobile.ViewModels
                 NotifyPropertyChanged();
             }
         }
+
         public string Header
         {
             get { return _menuItemEntity.Header; }
@@ -65,8 +52,7 @@ namespace UI_Mobile.ViewModels
                 NotifyPropertyChanged();
             }
         }
-
-
+        
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {

@@ -17,17 +17,23 @@ namespace UI_Mobile.Views.Offline
     public partial class MainPageOfflineMaster : ContentPage
     {
         private readonly MenuItemDataStore _menuItemDataStore = new MenuItemDataStore();
-        private MenuItemEntityModel _parentMenuItem;
+        //private MenuItemEntityModel _parentMenuItem;
         MainPageMasterViewModelOffline mainPageMasterViewModelOffline = new MainPageMasterViewModelOffline();
+
         public MainPageOfflineMaster()
         {
             InitializeComponent();
             BindingContext = mainPageMasterViewModelOffline;
         }
 
+        
+
         protected async override void OnAppearing()
         {
             base.OnAppearing();
+            App.LocalDatabase.someEvent += LocalDatabase_someEvent;
+
+
             MenuListView.ItemsSource = null;
 
             Connectivity.ConnectivityChanged += Connectivity_ConnectivityChanged;
@@ -52,10 +58,28 @@ namespace UI_Mobile.Views.Offline
             }
         }
 
+        private void LocalDatabase_someEvent(int regCount, int recCount)
+        {
+            UpdateRegistrationsInQueue();
+        }
+
+        private void UpdateRegistrationsInQueue()
+        {
+            var regCounter = App.LocalDatabase.FetchRegistrationItems().Count;
+            var recCounter = App.LocalDatabase.FetchRegistrationValueItems().Count;
+
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                LabelQueue.Text = $"{regCounter} registrations / {recCounter} records in queue";
+            });
+        }
+
         protected override void OnDisappearing()
         {
             Connectivity.ConnectivityChanged -= Connectivity_ConnectivityChanged;
+            App.LocalDatabase.someEvent -= LocalDatabase_someEvent;
         }
+
         private async void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
         {
             if (e.NetworkAccess == NetworkAccess.None)

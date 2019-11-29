@@ -31,32 +31,25 @@ namespace UI_Mobile.Views.Offline
         #endregion
 
         private MenuItemEntity _parentMenuItem;
-        private MainPageDetailViewModelOffline _mainPageDetailViewModelOffline;
+
+        private readonly FieldItemDataStore _fieldItemDataStore = new FieldItemDataStore();
+        private readonly RegistrationDataStore _registrationDataStore = new RegistrationDataStore();
 
         public MainPageOfflineDetail(MenuItemEntity menuItemEntity)
         {
             InitializeComponent();
-
-            _mainPageDetailViewModelOffline = new MainPageDetailViewModelOffline();
-            _mainPageDetailViewModelOffline.Reset(menuItemEntity);
-            BindingContext = _mainPageDetailViewModelOffline;
+            MainPageDetailViewModelOffline mainPageDetailViewModelOffline = new MainPageDetailViewModelOffline();
+            mainPageDetailViewModelOffline.Reset(menuItemEntity);
+            BindingContext = mainPageDetailViewModelOffline;
             mBarcodeReaders = new Dictionary<string, BarcodeReader>();
             _parentMenuItem = menuItemEntity;
-        }
 
-        private void LocalDatabase_someEvent(int regCount, int recCount)
-        {
-            UpdateRegistrationsInQueue();
-        }
 
-        private void UpdateRegistrationsInQueue()
-        {
-            var regCounter = App.LocalDatabase.FetchRegistrationItems().Count;
-            var recCounter = App.LocalDatabase.FetchRegistrationValueItems().Count;
-
+            var counter = mainPageDetailViewModelOffline.Registrations.Count;
+            
             Device.BeginInvokeOnMainThread(() =>
             {
-                LabelQueue.Text = $"{regCounter} registrations / {recCounter} records in queue";
+                LabelQueue.Text = string.Format("{0} items in queue", counter);
             });
         }
 
@@ -67,14 +60,11 @@ namespace UI_Mobile.Views.Offline
             await ToogleBarcodeReader(true);
             await SetConnectivity();
             ClearText(_parentMenuItem);
-            UpdateRegistrationsInQueue();
-            App.LocalDatabase.someEvent += LocalDatabase_someEvent;
         }
 
         protected async override void OnDisappearing()
         {
             await CloseBarcodeReader();
-            App.LocalDatabase.someEvent -= LocalDatabase_someEvent;
         }
 
         #region SCANNER FUNCTIONS
@@ -378,6 +368,7 @@ namespace UI_Mobile.Views.Offline
         private void SaveClicked(object sender, EventArgs e)
         {
             SaveRegistrationsOffline();
+
         }
 
         private RegistrationItemEntity SaveRegistrationsOffline()
@@ -401,5 +392,6 @@ namespace UI_Mobile.Views.Offline
             return registrationOffline;
         }
     }
+
         #endregion
 }
