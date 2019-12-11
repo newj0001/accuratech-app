@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Common;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using UI_Mobile.Models;
 
@@ -11,29 +12,29 @@ namespace UI_Mobile.ViewModels
 
         }
 
-        public MainPageDetailViewModelOffline(SubItemEntity paramSubItem)
+        public MainPageDetailViewModelOffline(SubItemEntityModel paramSubItem)
         {
             _subItemEntity = paramSubItem;
         }
 
-        public void Reset(MenuItemEntity menuItemEntity)
+        public void Reset(MenuItemEntityModel menuItemEntityOnline)
         {
-            MenuItemEntity = menuItemEntity;
+            MenuItemEntityOnline = menuItemEntityOnline;
         }
-        
-        private MenuItemEntity _menuItemEntity;
-        public MenuItemEntity MenuItemEntity
+
+        private MenuItemEntityModel _menuItemEntityOnline;
+        public MenuItemEntityModel MenuItemEntityOnline
         {
-            get => _menuItemEntity;
+            get => _menuItemEntityOnline;
             set
             {
-                _menuItemEntity = value;
+                _menuItemEntityOnline = value;
                 NotifyPropertyChanged();
             }
         }
 
-        private SubItemEntity _subItemEntity;
-        public SubItemEntity SubItemEntity
+        private SubItemEntityModel _subItemEntity;
+        public SubItemEntityModel SubItemEntity
         {
             get => _subItemEntity;
             set
@@ -45,14 +46,15 @@ namespace UI_Mobile.ViewModels
 
         public string Header
         {
-            get { return _menuItemEntity.Header; }
+            get { return _menuItemEntityOnline.Header; }
             set
             {
-                _menuItemEntity.Header = value;
+                _menuItemEntityOnline.Header = value;
                 NotifyPropertyChanged();
             }
         }
-        
+
+
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {

@@ -30,16 +30,25 @@ namespace UI_Mobile.Views.Offline
         private string _scannerName;
         #endregion
 
-        private MenuItemEntity _parentMenuItem;
+        private MenuItemEntityModel _parentMenuItem;
         private MainPageDetailViewModelOffline _mainPageDetailViewModelOffline;
 
-        public MainPageOfflineDetail(MenuItemEntity menuItemEntity)
+        public MainPageOfflineDetail(MenuItemEntityModel menuItemEntity)
         {
             InitializeComponent();
 
             _mainPageDetailViewModelOffline = new MainPageDetailViewModelOffline();
             _mainPageDetailViewModelOffline.Reset(menuItemEntity);
-            BindingContext = _mainPageDetailViewModelOffline;
+            try
+            {
+                BindingContext = _mainPageDetailViewModelOffline;
+            }
+            catch (Exception ex)
+            {
+
+                 throw ex;
+            }
+
             mBarcodeReaders = new Dictionary<string, BarcodeReader>();
             _parentMenuItem = menuItemEntity;
         }
@@ -170,7 +179,7 @@ namespace UI_Mobile.Views.Offline
                 UpdateBarcodeInfo(e.Data, _parentMenuItem);
             }, null);
         }
-        private void UpdateBarcodeInfo(string data, MenuItemEntity menuItemEntity)
+        private void UpdateBarcodeInfo(string data, MenuItemEntityModel menuItemEntity)
         {
             var scanData = data;
 
@@ -347,7 +356,7 @@ namespace UI_Mobile.Views.Offline
             }
         }
 
-        public void ClearText(MenuItemEntity menuItemEntity)
+        public void ClearText(MenuItemEntityModel menuItemEntity)
         {
             foreach (var item in menuItemEntity.SubItems)
             {
@@ -380,18 +389,18 @@ namespace UI_Mobile.Views.Offline
             SaveRegistrationsOffline();
         }
 
-        private RegistrationItemEntity SaveRegistrationsOffline()
+        private RegistrationModel SaveRegistrationsOffline()
         {
             var subItemsOffline = ((ListView)SubItemsListView).ItemsSource;
-            var registrationOffline = new RegistrationItemEntity {MenuItemId = _parentMenuItem.Id, RegistrationValues = new List<RegistrationValueItemEntity>() };
+            var registrationOffline = new RegistrationModel {MenuItemId = _parentMenuItem.Id, RegistrationValues = new List<RegistrationValueModel>() };
 
             foreach (var item in subItemsOffline)
             {
-                SubItemEntity subItemEntity = (SubItemEntity)item;
+                SubItemEntityModel subItemEntity = (SubItemEntityModel)item;
                 var mainPageDetailViewModel = new MainPageDetailViewModelOffline(subItemEntity);
 
 
-                var registrationValue = new RegistrationValueItemEntity();
+                var registrationValue = new RegistrationValueModel();
                 registrationValue.SubItemId = subItemEntity.Id;
                 registrationValue.Value = subItemEntity.FieldValue;
                 registrationValue.SubItemName = subItemEntity.Name;

@@ -3,10 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:local="clr-namespace:UI_Mobile.Behaviors"
              mc:Ignorable="d"
              x:Class="UI_Mobile.Views.Offline.MainPageOfflineDetail"
              Title="{Binding Header}">
+
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Clear" Clicked="ClearClicked"/>
         <ToolbarItem Text="Save" Clicked="SaveClicked"/>
@@ -14,7 +14,7 @@
     <ContentPage.Content>
         <StackLayout Spacing="0"  BackgroundColor="GhostWhite">
             <StackLayout Padding="10">
-                <ListView ItemsSource="{Binding Path=MenuItemEntity.SubItems}"
+                <ListView ItemsSource="{Binding Path=MenuItemEntityOnline.SubItems}"
                             SelectionMode="None"
                             VerticalOptions="FillAndExpand"
                             HasUnevenRows="True"

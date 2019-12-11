@@ -9,7 +9,6 @@ using System.Linq;
 using SQLitePCL;
 using System.Diagnostics;
 using System.IO;
-using UI_Mobile.Views.Online;
 using UI_Mobile.Views.Offline;
 using Xamarin.Essentials;
 using UI_Mobile.ViewModels;
@@ -47,7 +46,6 @@ namespace UI_Mobile
 
         private void SetMainPage()
         {
-
               MainPage = new MainPageOffline();
         }
 

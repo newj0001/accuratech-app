@@ -5,24 +5,26 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using SQLite;
+using SQLiteNetExtensions.Attributes;
 
 namespace Common
 {
+    [Table("SubItemEntityModel")]
     public class SubItemEntityModel : INotifyPropertyChanged
     {
+        [PrimaryKey]
         public int Id { get; set; }
 
         private string _name;
 
         public string Name
         {
-            get => _name;
-            set
-            {
-                _name = value;
-                NotifyPropertyChanged();
-            }
+            get { return _name; }
+            set { _name = value; NotifyPropertyChanged(); }
         }
+
+        //public string Name { get; set; }
 
         public bool IsFieldEnabledAsBool
         {
@@ -39,10 +41,14 @@ namespace Common
                     default: return false;
                 }
             }
-            private set { }
+            set { }
         }
 
+        [ForeignKey(typeof(MenuItemEntityModel))]
         public int? MenuItemId { get; set; }
+
+        [ManyToOne(CascadeOperations = CascadeOperation.CascadeRead)]
+        public MenuItemEntityModel MenuItemEntity { get; set; }
 
         private string _fieldValue;
 

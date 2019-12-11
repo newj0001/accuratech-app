@@ -40,7 +40,7 @@ namespace Common.Services
             throw new NotImplementedException();
         }
 
-        public async Task<ICollection<RegistrationModel>> GetItemsAsync()
+        public async Task<List<RegistrationModel>> GetItemsAsync()
         {
             using (HttpResponseMessage response = await _apiClient.GetAsync(urlRegistration))
             {

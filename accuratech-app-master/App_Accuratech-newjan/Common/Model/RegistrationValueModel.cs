@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using SQLite;
+using SQLiteNetExtensions.Attributes;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -8,13 +10,16 @@ using System.Threading.Tasks;
 
 namespace Common
 {
-    public class RegistrationValueModel : INotifyPropertyChanged
+    [Table("RegistrationValueModel")]
+    public class RegistrationValueModel
     {
-        private string _value;
+        [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
         public int SubItemId { get; set; }
         public string SubItemName { get; set; }
-        public SubItemEntityModel SubItemEntityModel { get; set; }
+
+
+        private string _value;
 
         public string Value
         {
@@ -22,16 +27,11 @@ namespace Common
             set
             {
                 _value = value;
-                NotifyPropertyChanged();
             }
         }
 
+        [ForeignKey(typeof(RegistrationModel))]
         public int RegistrationId { get; set; }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

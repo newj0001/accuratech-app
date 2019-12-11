@@ -13,6 +13,6 @@ namespace Common.Services
         Task<T> UpdateItemAsync(T item, int id);
         Task<HttpStatusCode> DeleteItemAsync(int id);
         Task<T> GetItemAsync(int id);
-        Task<ICollection<T>> GetItemsAsync();
+        Task<List<T>> GetItemsAsync();
     }
 }

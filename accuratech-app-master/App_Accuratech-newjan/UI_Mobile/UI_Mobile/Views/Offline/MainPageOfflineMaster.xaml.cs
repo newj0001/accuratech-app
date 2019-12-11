@@ -1,12 +1,12 @@
 ﻿using Common;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UI_Mobile.Models;
 using UI_Mobile.ViewModels;
-using UI_Mobile.Views.Online;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -26,12 +26,12 @@ namespace UI_Mobile.Views.Offline
             BindingContext = mainPageMasterViewModelOffline;
         }
 
-        
-
         protected async override void OnAppearing()
         {
             base.OnAppearing();
             App.LocalDatabase.someEvent += LocalDatabase_someEvent;
+
+            await Task.CompletedTask;
 
 
             MenuListView.ItemsSource = null;
@@ -45,7 +45,7 @@ namespace UI_Mobile.Views.Offline
                 if (itemsOnline != null)
                 {
                     await App.LocalDatabase.DeleteAllMenuItemAsync();
-                    await App.LocalDatabase.SaveMenuItemsAsync(ConvertToEntity(itemsOnline));
+                    await App.LocalDatabase.SaveMenuItemsAsync(itemsOnline);
                     MenuListView.ItemsSource = itemsOnline;
                 }
             }
@@ -93,26 +93,22 @@ namespace UI_Mobile.Views.Offline
         }
         private async void OnItemSelected(object sender, ItemTappedEventArgs e)
         {
-            var current = Connectivity.NetworkAccess;
-            var selectedItemOffline = e.Item as MenuItemEntity;
-            var selectedItemOnline = e.Item as MenuItemEntityModel;
-            if (current == NetworkAccess.None)
+            try
             {
-                if (!selectedItemOffline.IsMenuEnabledAsBool)
-                {
-                    return;
-                }
-                await Navigation.PushAsync(new MainPageOfflineDetail(selectedItemOffline));
+                var selectedItemOnline = e.Item as MenuItemEntityModel;
+                //if (!selectedItemOffline.IsMenuEnabledAsBool)
+                //{
+                //    return;
+                //}
+                await Navigation.PushAsync(new MainPageOfflineDetail(selectedItemOnline));
                 ((ListView)sender).SelectedItem = null;
             }
-            if (current == NetworkAccess.Internet)
+            catch (Exception ex)
             {
-                if (!selectedItemOnline.IsMenuEnabledAsBool)
-                {
-                    return;
-                }
-                await Navigation.PushAsync(new MainPageDetail(selectedItemOnline));
+
+                throw ex;
             }
+
         }
 
         private ICollection<MenuItemEntity> ConvertToEntity(ICollection<MenuItemEntityModel> items)

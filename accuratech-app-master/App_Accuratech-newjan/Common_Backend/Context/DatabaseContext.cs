@@ -27,7 +27,7 @@ namespace Common_Backend.Context
             modelBuilder.Entity<MenuItemEntityModel>().HasMany(m => m.SubItems).WithRequired().HasForeignKey(s => s.MenuItemId).WillCascadeOnDelete(true);
             modelBuilder.Entity<RegistrationModel>().HasMany(r => r.RegistrationValues).WithRequired().HasForeignKey(rv => rv.RegistrationId).WillCascadeOnDelete(true);
             modelBuilder.Entity<MenuItemEntityModel>().HasMany(m => m.Registrations).WithRequired().HasForeignKey(r => r.MenuItemId).WillCascadeOnDelete(true);
-            modelBuilder.Entity<RegistrationValueModel>().HasRequired(rv => rv.SubItemEntityModel).WithMany().HasForeignKey(rv => rv.SubItemId).WillCascadeOnDelete(false);
+            //modelBuilder.Entity<RegistrationValueModel>().HasRequired(rv => rv.SubItemEntityModel).WithMany().HasForeignKey(rv => rv.SubItemId).WillCascadeOnDelete(false);
 
         }
 

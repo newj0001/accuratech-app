@@ -48,7 +48,7 @@ namespace Common.Services
             throw new NotImplementedException();
         }
 
-        public async Task<ICollection<SubItemEntityModel>> GetItemsAsync()
+        public async Task<List<SubItemEntityModel>> GetItemsAsync()
         {
             using (HttpResponseMessage response = await _apiClient.GetAsync(urlMenuItem))
             {

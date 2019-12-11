@@ -29,7 +29,7 @@ namespace UI_Mobile
             }
         }
 
-        private async Task<List<RegistrationItemEntity>> AddLocalRegistrationsToServer()
+        private async Task<List<RegistrationModel>> AddLocalRegistrationsToServer()
         {
             var localRegistrations = App.LocalDatabase.FetchRegistrationItems();
 
@@ -39,28 +39,28 @@ namespace UI_Mobile
                 registrationModel.Id = item.Id;
                 registrationModel.MenuItemId = item.MenuItemId;
                 registrationModel.Timestamp = item.Timestamp;
-                registrationModel.RegistrationValues = ConvertToRegistrationValues(item.RegistrationValues);
+                registrationModel.RegistrationValues = item.RegistrationValues;
                 await _registrationDataStore.AddItemAsync(registrationModel);
             }
             await App.LocalDatabase.DeleteAllRegistrationItemsAsync();
             return localRegistrations;
         }
 
-        private ICollection<RegistrationValueModel> ConvertToRegistrationValues(List<RegistrationValueItemEntity> registrationValues)
-        {
-            var entities = new List<RegistrationValueModel>();
-            foreach (var item in registrationValues)
-            {
-                var x = new RegistrationValueModel();
-                x.Id = item.Id;
-                x.RegistrationId = item.RegistrationId;
-                x.SubItemId = item.SubItemId;
-                x.SubItemName = item.SubItemName;
-                x.Value = item.Value;
+        //private List<RegistrationValueModel> ConvertToRegistrationValues(List<RegistrationValueModel> registrationValues)
+        //{
+        //    var entities = new List<RegistrationValueModel>();
+        //    foreach (var item in registrationValues)
+        //    {
+        //        var x = new RegistrationValueModel();
+        //        x.Id = item.Id;
+        //        x.RegistrationId = item.RegistrationId;
+        //        x.SubItemId = item.SubItemId;
+        //        x.SubItemName = item.SubItemName;
+        //        x.Value = item.Value;
 
-                entities.Add(x);
-            }
-            return entities;
-        }
+        //        entities.Add(x);
+        //    }
+        //    return entities;
+        //}
     }
 }

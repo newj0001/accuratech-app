@@ -1,4 +1,5 @@
-﻿using SQLite;
+﻿using Common;
+using SQLite;
 using SQLiteNetExtensions.Extensions;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -20,10 +21,10 @@ namespace UI_Mobile
             try
             {
                 _localDatabase = new SQLiteConnection(dbPath);
-                _localDatabase.CreateTable<MenuItemEntity>();
-                _localDatabase.CreateTable<SubItemEntity>();
-                _localDatabase.CreateTable<RegistrationItemEntity>();
-                _localDatabase.CreateTable<RegistrationValueItemEntity>();
+                _localDatabase.CreateTable<MenuItemEntityModel>();
+                _localDatabase.CreateTable<SubItemEntityModel>();
+                _localDatabase.CreateTable<RegistrationModel>();
+                _localDatabase.CreateTable<RegistrationValueModel>();
             }
             catch (SQLiteException ex)
             {
@@ -32,17 +33,17 @@ namespace UI_Mobile
             }
         }
 
-        public List<RegistrationItemEntity> FetchRegistrationItems()
+        public List<RegistrationModel> FetchRegistrationItems()
         {
-            return _localDatabase.GetAllWithChildren<RegistrationItemEntity>().ToList();
+            return _localDatabase.GetAllWithChildren<RegistrationModel>().ToList();
         }
 
-        public List<RegistrationValueItemEntity> FetchRegistrationValueItems()
+        public List<RegistrationValueModel> FetchRegistrationValueItems()
         {
-            return _localDatabase.GetAllWithChildren<RegistrationValueItemEntity>().ToList();
+            return _localDatabase.GetAllWithChildren<RegistrationValueModel>().ToList();
         }
 
-        public Task SaveRegistrationItem(RegistrationItemEntity registrationItemEntity)
+        public Task SaveRegistrationItem(RegistrationModel registrationItemEntity)
         {
             if (registrationItemEntity.Id != 0)
             {
@@ -65,25 +66,25 @@ namespace UI_Mobile
             return Task.CompletedTask;
         }
 
-        public Task<List<MenuItemEntity>> LoadMenuItemsAsync()
+        public Task<List<MenuItemEntityModel>> LoadMenuItemsAsync()
         {
-            var menuItems = _localDatabase.GetAllWithChildren<MenuItemEntity>();
+            var menuItems = _localDatabase.GetAllWithChildren<MenuItemEntityModel>();
             return Task.FromResult(menuItems);
         }
 
-        public Task SaveMenuItemsAsync(ICollection<MenuItemEntity> items)
+        public Task SaveMenuItemsAsync(List<MenuItemEntityModel> items)
         {
             _localDatabase.InsertAll(items);
-            ICollection<SubItemEntity> objects = items.SelectMany(i => i.SubItems).ToList();
+            List<SubItemEntityModel> objects = items.SelectMany(i => i.SubItems).ToList();
             _localDatabase.InsertAll(objects);
             return Task.CompletedTask;
         }
 
         public Task DeleteAllRegistrationItemsAsync()
         {
-            _localDatabase.DropTable<RegistrationItemEntity>();
-            _localDatabase.DropTable<RegistrationValueItemEntity>();
-            _localDatabase.CreateTables<RegistrationItemEntity, RegistrationValueItemEntity>();
+            _localDatabase.DropTable<RegistrationModel>();
+            _localDatabase.DropTable<RegistrationValueModel>();
+            _localDatabase.CreateTables<RegistrationModel, RegistrationValueModel>();
 
             someEvent?.Invoke(FetchRegistrationItems().Count, FetchRegistrationValueItems().Count);
 
@@ -92,10 +93,10 @@ namespace UI_Mobile
 
         public Task DeleteAllMenuItemAsync()
          {
-            _localDatabase.DropTable<MenuItemEntity>();
-            _localDatabase.DropTable<SubItemEntity>();
+            _localDatabase.DropTable<MenuItemEntityModel>();
+            _localDatabase.DropTable<SubItemEntityModel>();
 
-            _localDatabase.CreateTables<MenuItemEntity, SubItemEntity>();
+            _localDatabase.CreateTables<MenuItemEntityModel, SubItemEntityModel>();
             return Task.CompletedTask;
         }
     }

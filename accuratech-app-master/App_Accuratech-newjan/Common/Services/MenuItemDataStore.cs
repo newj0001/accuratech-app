@@ -27,7 +27,7 @@ namespace Common
             throw new NotImplementedException();
         }
 
-        public async Task<ICollection<MenuItemEntityModel>> GetItemsAsync()
+        public async Task<List<MenuItemEntityModel>> GetItemsAsync()
         {
             using (HttpResponseMessage response = await _apiClient.GetAsync(urlMenuItem))
             {
